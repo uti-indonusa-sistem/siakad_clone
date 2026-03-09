@@ -133,13 +133,22 @@ webix.ready(function () {
   var kampus = {
     type: "clean",
     cols: [
-      //{ css:"kampus", url:"sopingi/satuan_pendidikan/tampil/"+wSia.apiKey+"/"+Math.random(), template: "#npsn# - #nm_lemb#", width: 100},
       {
-        css: "kampus",
-        url: "sopingi/semester/berlaku/" + wSia.apiKey + "/" + Math.random(),
-        id: "nm_smt",
-        template: "Semester : #nm_smt#",
-        width: 180,
+        view: "richselect",
+        id: "pilih_ta",
+        css: "pilih_ta",
+        width: 300,
+        labelWidth: 100,
+        label: "Pilih Periode ",
+        value: webix.storage.session.get("wSia").ta,
+        options: "sopingi/semester/pilihSemua/" + webix.storage.session.get("wSia").apiKey + "/" + Math.random(),
+        on: {
+          onChange: function (newv, oldv) {
+            if (newv != oldv && oldv != undefined) {
+              gantiPeriode(newv);
+            }
+          }
+        }
       },
       {
         id: "keluar",
@@ -2897,6 +2906,35 @@ webix.ready(function () {
 
   //adding ProgressBar functionality to layout
   webix.extend($$("layout_utama"), webix.ProgressBar);
+
+  function gantiPeriode(id_smt) {
+    var dataKirim = JSON.stringify({ aksi: "gantiPeriode", id_smt: id_smt });
+    var wSia = webix.storage.session.get("wSia");
+    proses_tampil();
+    webix
+      .ajax()
+      .post("sopingi/semester/gantiPeriode/" + wSia.apiKey + "/" + Math.random(), dataKirim, {
+        success: function (text) {
+          proses_hide();
+          var hasil = JSON.parse(text);
+          if (hasil.berhasil) {
+            webix.message(hasil.pesan);
+            // update session storage
+            var currentSia = webix.storage.session.get("wSia");
+            currentSia.ta = id_smt;
+            webix.storage.session.put("wSia", currentSia);
+            // reload page to apply new semester
+            window.location.reload();
+          } else {
+            webix.alert(hasil.pesan);
+          }
+        },
+        error: function () {
+          proses_hide();
+          webix.alert("Gagal terhubung ke server");
+        }
+      });
+  }
 
   function proses_tampil() {
     $$("layout_utama").disable();

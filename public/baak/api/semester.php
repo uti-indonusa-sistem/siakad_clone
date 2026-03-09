@@ -178,4 +178,10 @@ if ($aksi=="tampil") {
 		   echo json_encode($salah->getMessage());
 	  }
 	  
+} else if ($aksi=="gantiPeriode") {
+	$_SESSION['ta']=$data->id_smt;
+	$hasil['berhasil']=1;
+	$hasil['pesan']="Berhasil Ganti Periode Akademik";
+	echo json_encode($hasil);
+
 }
