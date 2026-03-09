@@ -1,0 +1,64 @@
+<?php
+if (!isset($key)) {
+	exit();
+}
+include 'login_auth.php';
+if ($key != $_SESSION['wsiaMHS']) {
+	exit();
+}
+
+require '../config/koneksi_sikeu.php';
+
+function http_request($url){
+    // persiapkan curl
+    $ch = curl_init(); 
+    // set url 
+    curl_setopt($ch, CURLOPT_URL, $url);
+    // set user agent    
+    curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+    // return the transfer as a string 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+    // $output contains the output string 
+    $output = curl_exec($ch); 
+
+    if (curl_errno($ch)) {
+        $error_msg = curl_error($ch);
+    } else {
+        $error_msg = "";
+    }
+    // tutup curl 
+    curl_close($ch);      
+
+    // mengembalikan hasil curl
+    if ($error_msg=="") {
+        $dataTagihan = json_decode($output, TRUE);
+        if ($dataTagihan['status']==true) {
+            $hasil['berhasil'] = 1;
+            $hasil['pesan'] = $dataTagihan['message'];
+            $hasil['data'] = $dataTagihan['data'];
+        } else {
+            $hasil['berhasil'] = 0;
+            $hasil['pesan'] = $dataTagihan['message'];
+            $hasil['data'] = [];
+        }
+    } else {
+        $hasil['berhasil'] = 0;
+		$hasil['pesan'] = "Gagal terhubung ke server sikeu. ".$error_msg;
+        $hasil['data'] = [];
+    }
+
+    return $hasil;
+}
+
+if ($aksi == "cek_tagihan") {
+
+    $no_pend = $_SESSION['no_pend'];
+    $angkatan = substr($_SESSION['mulai_smt'],0,4);
+    $kode_prodi = $_SESSION['kode_prodi'];
+    $jenis_daftar = $_SESSION['jenis_daftar'];
+    echo 
+    $tagihan = http_request("http://localhost:3000/pembayaran/".$no_pend."/".$angkatan."/".$kode_prodi."/".$jenis_daftar);
+
+    echo json_encode($tagihan);
+}
+("http://localhost:3000/pembayaran/".$no_pend."/".$angkatan."/".$kode_prodi."/".$jenis_daftar)

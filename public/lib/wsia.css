@@ -1,0 +1,329 @@
+.formLogin {
+	border-radius:8px;
+	margin: 15px auto;
+}
+
+.webix_menu-x .webix_list_item{
+      background:#183022 !important;
+      color: #ffffff;
+ }
+ 
+ 
+.menuBar.webix_toolbar {
+	border:0px;
+}
+
+.menuKiri .webix_view{
+	background-color: #ECEFF1;
+}
+.menuKiri .webix_list_item{
+	line-height: 35px;
+	border-bottom-color: #ddd;
+}
+
+.webix_view.headerAtas {
+	 background:#183022;
+	 color: #ffffff;
+}
+
+.webix_view.kampus {
+	 background:#183022;
+	 color: #ffffff;
+	 border-width: 0px !important;
+	 text-align: right;
+}
+
+.webix_view.kampus .webix_img_btn, .webix_view.kampus .webix_icon_btn {
+	 color: #ffffff !important;
+}
+
+.webix_view.footerBawah {
+	background:#183022;
+	color: #ffffff;
+}
+
+/* ANIMASI LOADER */
+.preload-wrapper {
+	z-index:9999999999;
+	position: fixed;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom:0;
+	overflow: hidden;
+}
+#preloader_1{
+    position:relative;
+    width:60px;
+    margin:23% auto;
+}
+#preloader_1 span{
+    display:block;
+    bottom:0px;
+    width: 9px;
+    height: 5px;
+    background:#9b59b6;
+    position:absolute;
+    -webkit-animation: preloader_1 1.5s  infinite ease-in-out;
+    animation: preloader_1 1.5s  infinite ease-in-out;
+
+}
+ 
+#preloader_1 span:nth-child(2){
+left:11px;
+-webkit-animation-delay: .2s;
+animation-delay: .2s;
+}
+#preloader_1 span:nth-child(3){
+left:22px;
+-webkit-animation-delay: .4s;
+animation-delay: .4s;
+}
+#preloader_1 span:nth-child(4){
+left:33px;
+-webkit-animation-delay: .6s;
+animation-delay: .6s;
+}
+#preloader_1 span:nth-child(5){
+left:44px;
+-webkit-animation-delay: .8s;
+animation-delay: .8s;
+}
+@-webkit-keyframes preloader_1 {
+    0% {height:5px;transform:translateY(0px);background:#9b59b6;}
+    25% {height:30px;transform:translateY(15px);background:#183022;}
+    50% {height:5px;transform:translateY(0px);background:#9b59b6;}
+    100% {height:5px;transform:translateY(0px);background:#9b59b6;}
+}
+@keyframes preloader_1 {
+    0% {height:5px;transform:translateY(0px);background:#9b59b6;}
+    25% {height:30px;transform:translateY(15px);background:#183022;}
+    50% {height:5px;transform:translateY(0px);background:#9b59b6;}
+    100% {height:5px;transform:translateY(0px);background:#9b59b6;}
+}
+
+.tableHover {
+	background: #fdf8b3;
+}
+
+.headerBg {
+	background:#4aa4df !important;
+	/*background-color: transparent !important;*/
+}
+
+.headerBackBg {
+	background:#e0f206 !important;
+}
+
+.headerBg .webix_template {
+	color: #ffffff !important;
+}
+
+.btnMK,.btnMhsDetail,.btnMhsAbsen,.btnKartuUTS,.btnKartuUAS,.btnSemesterSudahAktif {
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  border: 0px; 
+  color: #ffffff;
+  font-size: 12px;
+  background: #eb7a46;
+  text-decoration: none;
+  padding: 2px 5px;
+}
+
+.btnMK:hover,.btnMhsDetail:hover,.btnMhsAbsen:hover,.btnKartuUTS:hover,.btnKartuUAS:hover,.btnSemesterSudahAktif:hover {
+  background: #fbb43c;
+  background-image: -webkit-linear-gradient(top, #fbb43c, #b4d70d);
+  background-image: -moz-linear-gradient(top, #fbb43c, #b4d70d);
+  background-image: -ms-linear-gradient(top, #fbb43c, #b4d70d);
+  background-image: -o-linear-gradient(top, #fbb43c, #b4d70d);
+  background-image: linear-gradient(to bottom, #fbb43c, #b4d70d);
+  text-decoration: none;
+  cursor: pointer;
+  color: #230480;
+}
+
+.btnSemesterAktif {
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  border: 0px; 
+  color: #ffffff;
+  font-size: 12px;
+  background: #62d0f4;
+  text-decoration: none;
+  padding: 2px 5px;
+}
+
+.btnSemesterAktif:hover {
+  background: #62d0f4;
+  background-image: -webkit-linear-gradient(top, #62d0f4, #10b3e9);
+  background-image: -moz-linear-gradient(top, #62d0f4, #10b3e9);
+  background-image: -ms-linear-gradient(top, #62d0f4, #10b3e9);
+  background-image: -o-linear-gradient(top, #62d0f4, #10b3e9);
+  background-image: linear-gradient(to bottom, #62d0f4, #10b3e9);
+  text-decoration: none;
+  cursor: pointer;
+  color: #160574;
+}
+
+.btnDosenDetail,.btnDosenAbsen,.btnAbsenUTS,.btnAbsenUAS {
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  border: 0px; 
+  color: #ffffff;
+  font-size: 12px;
+  background: #117403;
+  text-decoration: none;
+  padding: 2px 5px;
+}
+
+.btnDosenDetail:hover,.btnDosenAbsen:hover,.btnAbsenUTS:hover,.btnAbsenUAS:hover {
+  background: #1ec905;
+  background-image: -webkit-linear-gradient(top, #1fcf05, #1ec905);
+  background-image: -moz-linear-gradient(top,#1fcf05, #1ec905);
+  background-image: -ms-linear-gradient(top, #1fcf05, #1ec905);
+  background-image: -o-linear-gradient(top, #1fcf05, #1ec905);
+  background-image: linear-gradient(to bottom,#1fcf05, #1ec905);
+  text-decoration: none;
+  cursor: pointer;
+  color: #3a015c;
+}
+
+.menuKiri button{
+	padding:0;
+	text-align: center;
+}
+
+.webix_view.menuKiri .webix_icon_btn {
+	 color: #ffffff !important;
+}
+
+.checked {
+	color :#103a9e;
+	cursor: pointer;
+}
+
+.notchecked {
+	color :#d90000;
+	cursor: pointer;
+}
+
+.checked:hover,.notchecked:hover {
+	background: #fbee51;
+}
+
+.info_krs {
+	margin: 0px;
+	
+	font-weight: bold;
+	color:#e30000;
+	font-size: 12pt;
+}
+
+.kurang {
+	background: #edf867;
+	color:#2f336a;
+	font-weight: bold;
+}
+
+.webix_layout_space {
+	background: #fff !important;
+}
+
+/* UPLOADER*/
+.overall{ height:40px; }
+.name{ height:100%; float:left; overflow: hidden;}
+.size{	padding: 0 10px; width: 100px; text-align: right; float: right;}
+.remove_file{ float:right; width:15px; padding-left: 10px;}
+.status{
+	float: right;
+	position: relative;
+	margin-top: 4px;
+	width: 80px;
+	height: 16px;
+	line-height: 16px;
+	border: 1px solid #A4BED4;
+	border-radius: 2px; -moz-border-radius: 2px; -webkit-border-radius: 2px;
+}
+.progress{ height: 100%; position: absolute; background-color: #b8e6ff;}
+.message{ z-index: 1; width:100%; text-align:center; position: absolute;}
+.message.error{ color: #e83b3b;}
+
+h2.info {
+	font-size: 13pt;
+	font-weight: bold;
+	color:#ffffff;
+	margin: 2px;
+	text-align: center;
+}
+
+.dashboard {
+	background:#244531 !important; 
+}
+
+ol.listPengampu {
+	padding-left:8px;
+	margin: 0px;
+}
+
+.checked2 {
+	color :#0c2970;
+	cursor: pointer;
+}
+
+.notchecked2 {
+	color :#f1bf3d;
+	cursor: pointer;
+}
+
+.checked2:hover,.notchecked2:hover {
+	color :#ea1aea;
+}
+
+.tableHover {
+	background: #fdf8b3;
+}
+
+h2.info {
+	color:#880000;
+}
+
+h2.infoAdmin {
+	color:#ffffff;
+}
+
+.webix_cell.webix_invalid, .webix_column>.webix_cell.webix_invalid:nth-child(even)  {
+    color: #990000;
+    background-color: #FFFF99;
+}
+
+.char-list .webix_list_item{
+  border-bottom: none;  
+  line-height: 22px;
+}
+.pesan{
+  margin: 3px;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+.msg1{
+   background: #e5f7fd;
+   margin-left: 40px;
+   color:#000;
+} 
+.msg2{
+   background: #c7edfc;
+   margin-right: 40px;
+   color:#000;
+} 
+
+.pesan .waktu {
+  font-size: 8pt;
+  display: block;
+}
+
+.pesan .hapus {
+  right: 5px;
+}

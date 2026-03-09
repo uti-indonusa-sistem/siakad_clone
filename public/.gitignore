@@ -1,0 +1,51 @@
+# Environment Configuration
+.env
+.env.local
+.env.*.local
+
+# Vendor directories
+/vendor/
+/baak/vendor/
+/dosen/vendor/
+/mhs/vendor/
+
+# Composer files
+composer.phar
+composer.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+/logs/
+
+# Temporary files
+/tmp/
+/temp/
+
+# Upload directories (keep structure, ignore contents)
+/mhs/foto/*
+!/mhs/foto/.gitkeep
+/mhs/kk/*
+!/mhs/kk/.gitkeep
+/dosen/foto/*
+!/dosen/foto/.gitkeep
+
+# Backup files
+*.bak
+*.backup
+*.sql
+
+# Security scan results
+security_scan_*.html
+security_scan_*.json
+

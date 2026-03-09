@@ -1,0 +1,9 @@
+# Jangan commit file-file sensitif
+blocked_ips.json
+attempts.json
+security.log
+jail_history.json
+blacklist.json
+brute_force.json
+subnet_bans.json
+subnet_tracking.json

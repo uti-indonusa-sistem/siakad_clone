@@ -1,0 +1,88 @@
+
+		body { font-family: DejaVuSansCondensed; font-size: 12pt;  }
+		p { text-align: justify; margin-bottom: 0.5pt; margin-top:0.5pt;  }
+		p.judul { text-align: center; margin-bottom: 5px; margin-top:5px;  }
+
+		table {font-family: DejaVuSansCondensed; font-size: 11pt; line-height: 1.2;
+			margin-top: 5pt; margin-bottom: 2pt; margin-left: auto; margin-right: auto;
+			border-collapse: collapse;  }
+			
+		table.biasa {font-family: DejaVuSansCondensed; font-size: 10pt; line-height: 1.5;
+			border-collapse: collapse;  }	
+			
+		table.biasa tr td {
+			text-align: justify; margin-bottom: 0.5pt; margin-top:0.5pt; 
+		}		
+			
+		table.laporan {font-family: DejaVuSansCondensed; font-size: 10pt; line-height: 1;
+			margin-top: 1pt; margin-bottom: 1pt; margin-left: auto; margin-right: auto;
+			border-collapse: collapse;  }
+		
+		table.laporan tr td {
+			font-size : 8.5pt;
+		}
+	
+		thead {	font-weight: bold; vertical-align: bottom; }
+		tfoot {	font-weight: bold; vertical-align: top; }
+		thead td { font-weight: bold; }
+		tfoot td { font-weight: bold; }
+
+		.headerrow td, .headerrow th { background: #dde8e0 }
+		.footerrow td, .footerrow th { background-gradient: linear #b7cebd #f5f8f5 0 1 0 0.2;  }
+
+		th {	font-weight: bold;  }
+
+		
+		hr {	width: 70%; height: 1px; 
+			text-align: center; color: #999999; 
+			margin-top: 8pt; margin-bottom: 8pt; }
+
+		a {	color: #000066; font-style: normal; text-decoration: underline; 
+			font-weight: normal; }
+
+		ul {	text-indent: 5mm; margin-bottom: 9pt; }
+		ol {	text-indent: 5mm; margin-bottom: 9pt; }
+
+		pre { font-family: DejaVuSansMono; font-size: 9pt; margin-top: 5pt; margin-bottom: 5pt; }
+
+		h1 {	font-weight: normal; font-size: 26pt; color: #000066; 
+			font-family: DejaVuSansCondensed; margin-top: 18pt; margin-bottom: 6pt; 
+			border-top: 0.075cm solid #000000; border-bottom: 0.075cm solid #000000; 
+			text-align: ; page-break-after:avoid; }
+			
+		h1.judul {	font-weight: normal; font-size: 14pt; color: #000066; 
+			font-family: DejaVuSansCondensed; margin-top: 5pt; margin-bottom: 6pt; 
+			border:0px; 
+			text-align: center ; }			
+			
+		h2 {	font-weight: bold; font-size: 18pt; color: #000066; 
+			font-family: DejaVuSansCondensed; margin-top: 6pt; margin-bottom: 6pt; 
+			border-top: 0.07cm solid #000000; border-bottom: 0.07cm solid #000000; 
+			text-align: ;  text-transform:uppercase; page-break-after:avoid; }
+		h3 {	font-weight: normal; font-size: 13pt; color: #000000; 
+			font-family: DejaVuSansCondensed; margin-top: 0pt; margin-bottom: 6pt; 
+			border-top: 0; border-bottom: 0; 
+			text-align: ; page-break-after:avoid; }
+		h4 {	font-weight: ; font-size: 13pt; color: #9f2b1e; 
+			font-family: DejaVuSansCondensed; margin-top: 10pt; margin-bottom: 7pt; 
+			font-variant: small-caps;
+			text-align: ;  margin-collapse:collapse; page-break-after:avoid; }
+		h5 {	font-weight: bold; font-style:italic; ; font-size: 11pt; color: #000044; 
+			font-family: DejaVuSansCondensed; margin-top: 8pt; margin-bottom: 4pt; 
+			text-align: ;  page-break-after:avoid; }
+		h6 {	font-weight: bold; font-size: 9.5pt; color: #333333; 
+			font-family: DejaVuSansCondensed; margin-top: 6pt; margin-bottom: ; 
+			text-align: ;  page-break-after:avoid; }
+
+		.breadcrumb {
+			text-align: right; font-size: 8pt; font-family: DejaVuSerifCondensed; color: #666666;
+			font-weight: bold; font-style: normal; margin-bottom: 6pt; }
+
+		.evenrow td, .evenrow th { background-color: #f5f8f5; } 
+		.oddrow td, .oddrow th { background-color: #e3ece4; } 
+		div.header {
+			text-align: center;
+		}
+		
+
+

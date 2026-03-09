@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validasi Kartu Ujian - Politeknik Indonusa Surakarta</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .status-valid {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .status-invalid {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+
+        .info-group {
+            margin-bottom: 20px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tagihan-list {
+            margin-top: 20px;
+        }
+
+        .tagihan-item {
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .tagihan-item-lunas {
+            background: #f0fff4;
+            border-left: 4px solid #38a169;
+        }
+
+        .tagihan-nama {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .tagihan-detail {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 12px;
+            padding: 20px;
+            color: #c53030;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #38a169;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        @media (max-width: 640px) {
+            .card-header h1 {
+                font-size: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>🎓 Validasi Kartu Ujian</h1>
+                <p>Politeknik Indonusa Surakarta</p>
+            </div>
+            <div class="card-body" id="content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Memvalidasi data kartu ujian...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Format currency
+        function formatRupiah(amount) {
+            return 'Rp ' + parseInt(amount).toLocaleString('id-ID');
+        }
+
+        // Main validation function
+        async function validateKartuUjian() {
+            const nim = getUrlParameter('nim');
+            const angkatan = getUrlParameter('angkatan');
+            const kode_prodi = getUrlParameter('kode_prodi');
+            const jenis_daftar = getUrlParameter('jenis_daftar');
+            const semester = getUrlParameter('semester');
+            const tipe = getUrlParameter('tipe');
+            const token = getUrlParameter('token'); // TOKEN VALIDASI
+
+            // Validate parameters
+            if (!nim || !angkatan || !kode_prodi || !jenis_daftar || !semester || !tipe || !token) {
+                showError('Parameter tidak lengkap. QR Code tidak valid atau rusak.');
+                return;
+            }
+
+            try {
+                // Call SIAKAD API - validates token AND payment in one call
+                const apiUrl = `https://siakadv2.poltekindonusa.ac.id/api/validasi_kartu_ujian.php?` +
+                              `token=${encodeURIComponent(token)}` +
+                              `&nim=${encodeURIComponent(nim)}` +
+                              `&angkatan=${encodeURIComponent(angkatan)}` +
+                              `&kode_prodi=${encodeURIComponent(kode_prodi)}` +
+                              `&jenis_daftar=${encodeURIComponent(jenis_daftar)}` +
+                              `&semester=${encodeURIComponent(semester)}` +
+                              `&tipe=${encodeURIComponent(tipe)}`;
+                
+                console.log('Validating with URL:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+
+                console.log('API Response:', result);
+
+                if (!result.status) {
+                    // Token invalid or other error
+                    if (result.data && result.data.reason === 'TOKEN_NOT_FOUND') {
+                        showError(
+                            '⛔ <strong>KARTU UJIAN PALSU TERDETEKSI!</strong><br><br>' +
+                            'Kartu ujian ini tidak terdaftar di sistem atau merupakan hasil editan.<br>' +
+                            'Token validasi tidak ditemukan dalam database.<br><br>' +
+                            '<strong>Tindakan:</strong> Laporkan ke bagian akademik segera!'
+                        );
+                    } else if (result.data && result.data.reason === 'DATA_MISMATCH') {
+                        showError(
+                            '⛔ <strong>DATA DIMANIPULASI!</strong><br><br>' +
+                            'Token valid tetapi data kartu tidak cocok.<br>' +
+                            'Kemungkinan parameter di URL telah diubah.<br><br>' +
+                            '<strong>Tindakan:</strong> Laporkan ke bagian akademik!'
+                        );
+                    } else {
+                        showError(
+                            '<strong>Validasi Gagal</strong><br><br>' +
+                            (result.message || 'Error tidak diketahui') +
+                            '<br><br><small>Hubungi bagian akademik untuk bantuan.</small>'
+                        );
+                    }
+                    return;
+                }
+
+                // Display validation result
+                displayValidationResult({
+                    valid: result.data.pembayaran_lunas,
+                    mahasiswa: result.data.mahasiswa,
+                    ujian: result.data.ujian,
+                    pembayaran_lunas: result.data.pembayaran_lunas,
+                    tagihan_belum_lunas: result.data.tagihan_belum_lunas || [],
+                    total_kekurangan: result.data.total_kekurangan || 0,
+                    token_valid: result.data.token_valid,
+                    tanggal_cetak: result.data.tanggal_cetak
+                });
+
+            } catch (error) {
+                console.error('Validation error:', error);
+                showError(
+                    '<strong>Terjadi kesalahan!</strong><br><br>' +
+                    'Detail: ' + error.message + '<br><br>' +
+                    'Kemungkinan penyebab:<br>' +
+                    '• Server sedang down<br>' +
+                    '• Database table belum dibuat (run migration)<br>' +
+                    '• Koneksi internet terputus<br><br>' +
+                    '<small>Hubungi IT Support untuk bantuan.</small>'
+                );
+            }
+        }
+
+        function displayValidationResult(data) {
+            const content = document.getElementById('content');
+            
+            if (data.valid && data.pembayaran_lunas) {
+                // VALID - Semua pembayaran lunas
+                content.innerHTML = `
+                    <div class="success-icon">✅</div>
+                    <div class="alert alert-success">
+                        <strong>KARTU UJIAN SAH DAN VALID</strong><br>
+                        ✔️ Token terverifikasi - Kartu asli dari sistem<br>
+                        ✔️ Semua pembayaran telah lunas<br>
+                        Mahasiswa berhak mengikuti ujian.
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">NIM</div>
+                        <div class="info-value">${data.mahasiswa.nim}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Angkatan</div>
+                        <div class="info-value">${data.mahasiswa.angkatan}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Kode Prodi</div>
+                        <div class="info-value">${data.mahasiswa.kode_prodi}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Tipe Ujian</div>
+                        <div class="info-value">${data.ujian.tipe} - Semester ${data.ujian.semester}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Status Pembayaran</div>
+                        <div class="info-value" style="border-left-color: #38a169; background: #f0fff4;">
+                            ✅ LUNAS - Tidak ada tunggakan
+                        </div>
+                    </div>
+                    
+                    ${data.tanggal_cetak ? `
+                    <div class="info-group">
+                        <div class="info-label">Tanggal Cetak Kartu</div>
+                        <div class="info-value" style="border-left-color: #667eea;">
+                            ${new Date(data.tanggal_cetak).toLocaleString('id-ID')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="footer">
+                        <p>🔒 Kartu terverifikasi secure token</p>
+                        <p>© ${new Date().getFullYear()} Politeknik Indonusa Surakarta</p>
+                        <p style="margin-top: 5px; font-size: 11px;">Validasi dilakukan pada ${new Date().toLocaleString('id-ID')}</p>
+                    </div>
+                `;
+            } else {
+                // INVALID - Ada tagihan yang belum lunas
+                const tagihanHTML = data.tagihan_belum_lunas.map(tagihan => `
+                    <div class="tagihan-item">
+                        <div class="tagihan-nama">${tagihan.nama_biaya}</div>
+                        <div class="tagihan-detail">
+                            <div>Tagihan: ${formatRupiah(tagihan.tagihan)}</div>
+                            <div>Terbayar: ${formatRupiah(tagihan.terbayar)}</div>
+                            ${tagihan.potongan > 0 ? `<div>Potongan: ${formatRupiah(tagihan.potongan)}</div>` : ''}
+                            <div style="font-weight: 600; color: #c53030; margin-top: 5px;">
+                                Kekurangan: ${formatRupiah(tagihan.kekurangan)}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                content.innerHTML = `
+                    <div style="font-size: 64px; color: #e53e3e; text-align: center; margin-bottom: 20px;">
+                        ❌
+                    </div>
+                    <div class="alert alert-danger">
+                        <strong>KARTU UJIAN TIDAK VALID</strong><br>
+                        Terdapat ${data.tagihan_belum_lunas.length} tagihan yang belum lunas.
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">NIM</div>
+                        <div class="info-value">${data.mahasiswa.nim}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Angkatan</div>
+                        <div class="info-value">${data.mahasiswa.angkatan}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Tipe Ujian</div>
+                        <div class="info-value">${data.ujian.tipe} - Semester ${data.ujian.semester}</div>
+                    </div>
+                    
+                    <div class="info-group">
+                        <div class="info-label">Total Kekurangan</div>
+                        <div class="info-value" style="border-left-color: #e53e3e; background: #fff5f5; font-weight: 600; color: #c53030;">
+                            ${formatRupiah(data.total_kekurangan)}
+                        </div>
+                    </div>
+                    
+                    <div class="tagihan-list">
+                        <h3 style="margin-bottom: 15px; color: #333; font-size: 16px;">Daftar Tagihan Belum Lunas:</h3>
+                        ${tagihanHTML}
+                    </div>
+                    
+                    <div class="alert alert-warning" style="margin-top: 20px;">
+                        <strong>⚠️ Perhatian</strong><br>
+                        Mahasiswa tidak diperkenankan mengikuti ujian. Segera lunasi tagihan di atas melalui:<br>
+                        <ul style="margin: 10px 0 0 20px; text-align: left;">
+                            <li>Bank BRI / BNI (Transfer ke Virtual Account)</li>
+                            <li>Kasir Kampus (Lantai 1 Gedung A)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>© ${new Date().getFullYear()} Politeknik Indonusa Surakarta</p>
+                        <p style="margin-top: 5px; font-size: 11px;">Hubungi bagian keuangan: 0271-123456</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error-message">
+                    <div class="error-icon">⚠️</div>
+                    <h3 style="margin-bottom: 10px;">Validasi Gagal</h3>
+                    <p>${message}</p>
+                </div>
+                <div class="footer">
+                    <p>© ${new Date().getFullYear()} Politeknik Indonusa Surakarta</p>
+                    <p style="margin-top: 5px; font-size: 11px;">Untuk bantuan hubungi bagian akademik</p>
+                </div>
+            `;
+        }
+
+        // Run validation when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(validateKartuUjian, 800);
+        });
+    </script>
+</body>
+</html>

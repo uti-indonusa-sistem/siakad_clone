@@ -1,0 +1,20 @@
+# Prevent Directoy listing
+ Options -Indexes
+
+<files config.php>
+Order deny,allow
+deny from all
+</files>
+
+RewriteEngine On
+RewriteBase /mhs/
+
+# Trap wp-admin scans
+RewriteRule .*wp-admin.* index.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"

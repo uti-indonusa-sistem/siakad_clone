@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validasi KTM - Politeknik Indonusa Surakarta</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a5f;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .status-valid {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .status-invalid {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .status-expired {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+
+        .foto-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .foto-container img {
+            width: 120px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #1e3a5f;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a5f;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 12px;
+            padding: 20px;
+            color: #c53030;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #38a169;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .warning-icon {
+            font-size: 64px;
+            color: #d69e2e;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        @media (max-width: 480px) {
+            .card-header h1 {
+                font-size: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>🎓 Validasi KTM</h1>
+                <p>Kartu Tanda Mahasiswa - Politeknik Indonusa Surakarta</p>
+            </div>
+            <div class="card-body" id="content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Memvalidasi data KTM...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Main validation function
+        async function validateKTM() {
+            const nim = getUrlParameter('nim');
+
+            // Validate parameters
+            if (!nim) {
+                showError('Parameter NIM tidak ditemukan. QR Code tidak valid atau rusak.');
+                return;
+            }
+
+            // Validate MD5 format
+            if (!/^[a-f0-9]{32}$/i.test(nim)) {
+                showError('Format NIM tidak valid. Pastikan QR Code di-scan dengan benar.');
+                return;
+            }
+
+            try {
+                // Call SIAKAD API
+                const apiUrl = `https://siakadv2.poltekindonusa.ac.id/api/validasi_ktm.php?nim=${encodeURIComponent(nim)}`;
+                
+                console.log('Validating KTM with URL:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+
+                console.log('API Response:', result);
+
+                if (!result.status) {
+                    // Invalid KTM
+                    if (result.data && result.data.reason === 'NOT_FOUND') {
+                        showError(
+                            '<strong>⛔ KTM TIDAK VALID</strong><br><br>' +
+                            'Data mahasiswa tidak ditemukan dalam sistem.<br>' +
+                            'Kemungkinan KTM palsu atau data salah.<br><br>' +
+                            '<strong>Tindakan:</strong> Laporkan ke bagian akademik!'
+                        );
+                    } else {
+                        showError(result.message || 'Validasi gagal');
+                    }
+                    return;
+                }
+
+                // Display validation result
+                displayValidationResult(result.data);
+
+            } catch (error) {
+                console.error('Validation error:', error);
+                showError(
+                    '<strong>Terjadi kesalahan!</strong><br><br>' +
+                    'Detail: ' + error.message + '<br><br>' +
+                    '<small>Hubungi IT Support untuk bantuan.</small>'
+                );
+            }
+        }
+
+        function displayValidationResult(data) {
+            const content = document.getElementById('content');
+            
+            const statusIcon = data.expired ? 
+                '<div class="warning-icon">⚠️</div>' : 
+                '<div class="success-icon">✅</div>';
+            
+            const statusAlert = data.expired ?
+                `<div class="alert alert-warning">
+                    <strong>KTM VALID - MASA BERLAKU HABIS</strong><br>
+                    KTM ini asli tetapi sudah melewati masa berlaku.
+                </div>` :
+                `<div class="alert alert-success">
+                    <strong>KTM VALID DAN AKTIF</strong><br>
+                    ✔️ Data terverifikasi dari sistem akademik
+                </div>`;
+
+            content.innerHTML = `
+                ${statusIcon}
+                ${statusAlert}
+                
+                <div class="foto-container">
+                    <img src="${data.foto_url}" alt="Foto Mahasiswa" 
+                         onerror="this.src='https://siakadv2.poltekindonusa.ac.id/gambar/no-foto.jpg';">
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Nama Lengkap</div>
+                    <div class="info-value">${data.mahasiswa.nama}</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">NIM</div>
+                    <div class="info-value">${data.mahasiswa.nim}</div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Program Studi</div>
+                    <div class="info-value">${data.mahasiswa.prodi} (${data.mahasiswa.jenjang})</div>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-group">
+                        <div class="info-label">Angkatan</div>
+                        <div class="info-value">${data.mahasiswa.angkatan}</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Jenis Kelamin</div>
+                        <div class="info-value">${data.mahasiswa.jenis_kelamin}</div>
+                    </div>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-group">
+                        <div class="info-label">Tempat Lahir</div>
+                        <div class="info-value">${data.mahasiswa.tempat_lahir || '-'}</div>
+                    </div>
+                    <div class="info-group">
+                        <div class="info-label">Tanggal Lahir</div>
+                        <div class="info-value">${data.mahasiswa.tanggal_lahir || '-'}</div>
+                    </div>
+                </div>
+                
+                <div class="info-group">
+                    <div class="info-label">Masa Berlaku KTM</div>
+                    <div class="info-value" style="border-left-color: ${data.expired ? '#d69e2e' : '#38a169'};">
+                        ${data.masa_berlaku} ${data.expired ? '(EXPIRED)' : '(AKTIF)'}
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p>🔒 Data terverifikasi dari SIAKAD</p>
+                    <p>© ${new Date().getFullYear()} Politeknik Indonusa Surakarta</p>
+                    <p style="margin-top: 5px; font-size: 10px;">Validasi: ${new Date().toLocaleString('id-ID')}</p>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error-message">
+                    <div class="error-icon">⚠️</div>
+                    <h3 style="margin-bottom: 10px;">Validasi Gagal</h3>
+                    <p>${message}</p>
+                </div>
+                <div class="footer">
+                    <p>© ${new Date().getFullYear()} Politeknik Indonusa Surakarta</p>
+                    <p style="margin-top: 5px; font-size: 10px;">Untuk bantuan hubungi bagian akademik</p>
+                </div>
+            `;
+        }
+
+        // Run validation when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(validateKTM, 800);
+        });
+    </script>
+</body>
+</html>
