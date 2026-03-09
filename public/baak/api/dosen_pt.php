@@ -111,18 +111,13 @@ if ($aksi=="tampil") {
 	    $dataSP	= $qrySP->fetch(PDO::FETCH_OBJ);
 	    $db		= null;
 	    $id_sp=$dataSP->id_sp;
-	    $qryPenugasan = "update wsia_dosen_pt set xid_ptk='$xid_ptk',id_sp='$id_sp',id_thn_ajaran='$id_thn_ajaran',id_sms='$id_sms',no_srt_tgs='$no_srt_tgs',tgl_srt_tgs='$tgl_srt_tgs',tmt_srt_tgs='$tgl_srt_tgs',a_sp_homebase='$a_sp_homebase' where xid_reg_ptk='$xid_reg_ptk' and id_reg_ptk=''";
+	    $qryPenugasan = "update wsia_dosen_pt set xid_ptk='$xid_ptk',id_sp='$id_sp',id_thn_ajaran='$id_thn_ajaran',id_sms='$id_sms',no_srt_tgs='$no_srt_tgs',tgl_srt_tgs='$tgl_srt_tgs',tmt_srt_tgs='$tgl_srt_tgs',a_sp_homebase='$a_sp_homebase' where xid_reg_ptk='$xid_reg_ptk'";
 		try {
 		    $db 		= koneksi();
 		    $eksekusi 	= $db->query($qryPenugasan);  
 		    $db = null;
-		    if ($eksekusi->rowCount()>0) {
-		    	$hasil['berhasil']=1;
-		    	$hasil['pesan']="Berhasil Ubah";
-		    } else {
-			    $hasil['berhasil']=0;
-		    	$hasil['pesan']="Gagal ubah.<br>Mungkin data sudah disinkronkan";
-			}
+			$hasil['berhasil']=1;
+			$hasil['pesan']="Berhasil Ubah";
 			echo json_encode($hasil);
 		} catch (PDOException $salah) {
 			$hasil['berhasil']=0;
@@ -138,18 +133,13 @@ if ($aksi=="tampil") {
 	
 } else if ($aksi=="hapus") {
 	$xid_reg_ptk=$data->xid_reg_ptk;
-	$sql = "delete from wsia_dosen_pt where xid_reg_ptk='$xid_reg_ptk' and (id_reg_ptk='' OR id_reg_ptk IS NULL)";
+	$sql = "delete from wsia_dosen_pt where xid_reg_ptk='$xid_reg_ptk'";
 	try {
 	    $db 		= koneksi();
 	    $eksekusi 	= $db->query($sql);  
 	    $db = null;
-		if ($eksekusi->rowCount()>0) {
-	    	$hasil['berhasil']=1;
-	    	$hasil['pesan']="Berhasil Hapus";
-	    } else {
-		    $hasil['berhasil']=0;
-	    	$hasil['pesan']="Penugasan ini tidak diperbolehkan dihapus";
-		}
+		$hasil['berhasil']=1;
+		$hasil['pesan']="Berhasil Hapus";
 		echo json_encode($hasil);
 	} catch (PDOException $salah) {
 		$hasil['berhasil']=0;

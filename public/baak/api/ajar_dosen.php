@@ -64,18 +64,13 @@ if ($aksi=="tampil") {
 	$ruang=clean($data->ruang);
 	$kode_gabung=clean($data->kode_gabung);
 	
-	$qryAjarDosen = "update wsia_ajar_dosen set id_reg_ptk='$xid_reg_ptk',id_kls='$xid_klsAjarDosen',sks_subst_tot='$sks_subst_tot',jml_tm_renc='$jml_tm_renc',jml_tm_real='$jml_tm_real', hari='$hari',jam='$jam',ruang='$ruang', kode_gabung='$kode_gabung' where xid_ajar='$xid_ajar' and (id_ajar='' OR id_ajar IS NULL)";
+	$qryAjarDosen = "update wsia_ajar_dosen set id_reg_ptk='$xid_reg_ptk',id_kls='$xid_klsAjarDosen',sks_subst_tot='$sks_subst_tot',jml_tm_renc='$jml_tm_renc',jml_tm_real='$jml_tm_real', hari='$hari',jam='$jam',ruang='$ruang', kode_gabung='$kode_gabung' where xid_ajar='$xid_ajar'";
 	try {
 	    $db 		= koneksi();
 	    $eksekusi 	= $db->query($qryAjarDosen);  
 	    $db = null;
-    	if ($eksekusi->rowCount()>0) {
-	    	$hasil['berhasil']=1;
-	    	$hasil['pesan']="Berhasil Ubah";
-	    } else {
-		    $hasil['berhasil']=0;
-	    	$hasil['pesan']="Gagal ubah.<br>Mungkin data sudah disinkronkan";
-		}
+		$hasil['berhasil']=1;
+		$hasil['pesan']="Berhasil Ubah";
 		echo json_encode($hasil);
 	} catch (PDOException $salah) {
 		$hasil['berhasil']=0;
@@ -85,18 +80,13 @@ if ($aksi=="tampil") {
 	
 } else if ($aksi=="hapus") {
 	$xid_ajar=$data->xid_ajar;
-	$sql = "delete from wsia_ajar_dosen where xid_ajar='$xid_ajar' and (id_ajar='' OR id_ajar IS NULL)";
+	$sql = "delete from wsia_ajar_dosen where xid_ajar='$xid_ajar'";
 	try {
 	    $db 		= koneksi();
 	    $eksekusi 	= $db->query($sql);  
 	    $db = null;
-    	if ($eksekusi->rowCount()>0) {
-			$hasil['berhasil']=1;
-    		$hasil['pesan']="Berhasil hapus";
-		} else {
-			$hasil['berhasil']=0;
-    		$hasil['pesan']="Gagal dihapus.<br>Mungkin sudah disinkronkan ke Feeder";
-		}
+		$hasil['berhasil']=1;
+		$hasil['pesan']="Berhasil hapus";
 		echo json_encode($hasil);
 	} catch (PDOException $salah) {
 		$hasil['berhasil']=0;

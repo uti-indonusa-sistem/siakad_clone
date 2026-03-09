@@ -110,18 +110,13 @@ if ($aksi=="tampil") {
 	
 } else if ($aksi=="hapus") {
 	$xid_ptk	=$data->xid_ptk;
-	$sql = "delete from wsia_dosen where xid_ptk='$xid_ptk' and id_ptk=''";
+	$sql = "delete from wsia_dosen where xid_ptk='$xid_ptk'";
 	try {
 	    $db 		= koneksi();
 	    $eksekusi 	= $db->query($sql);  
 	    $db = null;
-    		if ($eksekusi->rowCount()>0) {
-			$hasil['berhasil']=1;
-    			$hasil['pesan']="Berhasil hapus";
-		} else {
-			$hasil['berhasil']=0;
-    			$hasil['pesan']="Dosen tidak diperbolehkan dihapus";
-		}
+		$hasil['berhasil']=1;
+		$hasil['pesan']="Berhasil hapus";
 		echo json_encode($hasil);
 	} catch (PDOException $salah) {
 		$hasil['berhasil']=0;
