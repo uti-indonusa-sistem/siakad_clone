@@ -1415,28 +1415,6 @@ webix.ready(function () {
           pembimbingDetail.destroy();
         }
 
-        var reloadBimbinganDataTable = function () {
-          var th = $$("menuPembimbing")
-            ? $$("menuPembimbing").getSelectedId()
-            : null;
-          var kelas = $$("selectBimbinganKelas")
-            ? $$("selectBimbinganKelas").getValue()
-            : null;
-
-          if (th && kelas) {
-            webix.message("Memuat data Aktifitas...");
-            var url =
-              "sopingi/pa_aktifitas/tampil/" +
-              wSiaMhs.apiKey +
-              "/" +
-              th +
-              "_" +
-              kelas;
-            $$("pembimbingRiwayatDataTable").clearAll();
-            $$("pembimbingRiwayatDataTable").define("url", url);
-            $$("pembimbingRiwayatDataTable").refresh();
-          }
-        };
         var panelKiriPembimbing = {
           id: "panelKiriPembimbing",
           borderless: false,
@@ -1456,6 +1434,11 @@ webix.ready(function () {
                 wSiaMhs.apiKey +
                 "/" +
                 Math.random(),
+              on: {
+                onAfterSelect: function () {
+                  reloadBimbinganDataTable();
+                },
+              },
             },
           ],
         };
@@ -1474,6 +1457,11 @@ webix.ready(function () {
                   label: "Pilih Kelas",
                   width: 200,
                   options: "sopingi/kelas_pa/semua/" + wSiaMhs.apiKey + "/1",
+                  on: {
+                    onChange: function () {
+                      reloadBimbinganDataTable();
+                    },
+                  },
                 },
                 {
                   view: "button",
@@ -1756,22 +1744,12 @@ webix.ready(function () {
           },
         });
 
-        $$("pembimbingRiwayatRefresh").attachEvent(
-          "onItemClick",
-          reloadBimbinganDataTable,
-        );
-        $$("selectBimbinganTampil").attachEvent(
-          "onItemClick",
-          reloadBimbinganDataTable,
-        );
-        $$("menuPembimbing").attachEvent(
-          "onAfterSelect",
-          reloadBimbinganDataTable,
-        );
-        $$("selectBimbinganKelas").attachEvent(
-          "onChange",
-          reloadBimbinganDataTable,
-        );
+        $$("pembimbingRiwayatRefresh").attachEvent("onItemClick", function () {
+          reloadBimbinganDataTable();
+        });
+        $$("selectBimbinganTampil").attachEvent("onItemClick", function () {
+          reloadBimbinganDataTable();
+        });
 
         $$("pembimbingRiwayatCetak").attachEvent("onItemClick", function () {
           var kelas = $$("selectBimbinganKelas").getValue();

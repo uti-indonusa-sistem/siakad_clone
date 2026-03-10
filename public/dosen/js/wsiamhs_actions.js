@@ -13,6 +13,25 @@ function proses_hide() {
   $$("layout_utama").hideProgress();
 }
 
+function reloadBimbinganDataTable() {
+  if (
+    !$$("menuPembimbing") ||
+    !$$("selectBimbinganKelas") ||
+    !$$("pembimbingRiwayatDataTable")
+  )
+    return;
+
+  var th = $$("menuPembimbing").getSelectedId();
+  var kelas = $$("selectBimbinganKelas").getValue();
+
+  if (th && kelas) {
+    var url =
+      "sopingi/pa_aktifitas/tampil/" + wSiaMhs.apiKey + "/" + th + "_" + kelas;
+    $$("pembimbingRiwayatDataTable").clearAll();
+    $$("pembimbingRiwayatDataTable").load(url);
+  }
+}
+
 function peringatan(judul, pesan) {
   webix.alert({
     title: judul,
