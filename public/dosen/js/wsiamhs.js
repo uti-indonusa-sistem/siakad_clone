@@ -1456,9 +1456,6 @@ webix.ready(function () {
                 wSiaMhs.apiKey +
                 "/" +
                 Math.random(),
-              on: {
-                onAfterSelect: reloadBimbinganDataTable,
-              },
             },
           ],
         };
@@ -1477,9 +1474,6 @@ webix.ready(function () {
                   label: "Pilih Kelas",
                   width: 200,
                   options: "sopingi/kelas_pa/semua/" + wSiaMhs.apiKey + "/1",
-                  on: {
-                    onChange: reloadBimbinganDataTable,
-                  },
                 },
                 {
                   view: "button",
@@ -1770,6 +1764,14 @@ webix.ready(function () {
           "onItemClick",
           reloadBimbinganDataTable,
         );
+        $$("menuPembimbing").attachEvent(
+          "onAfterSelect",
+          reloadBimbinganDataTable,
+        );
+        $$("selectBimbinganKelas").attachEvent(
+          "onChange",
+          reloadBimbinganDataTable,
+        );
 
         $$("pembimbingRiwayatCetak").attachEvent("onItemClick", function () {
           var kelas = $$("selectBimbinganKelas").getValue();
@@ -1857,17 +1859,8 @@ webix.ready(function () {
                       var hasil = JSON.parse(response);
                       if (hasil.berhasil) {
                         webix.message(hasil.pesan);
-                        var kelas = $$("selectBimbinganKelas").getValue();
-                        var th = $$("menuPembimbing").getSelectedId();
-                        $$("pembimbingRiwayatDataTable").clearAll();
-                        $$("pembimbingRiwayatDataTable").load(
-                          "sopingi/pa_aktifitas/tampil/" +
-                            wSiaMhs.apiKey +
-                            "/" +
-                            th +
-                            "_" +
-                            kelas,
-                        );
+                        // Call the shared function to reload the data table
+                        reloadBimbinganDataTable();
                       } else {
                         webix.alert({
                           title: "Gagal Hapus",
