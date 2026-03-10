@@ -1414,6 +1414,29 @@ webix.ready(function () {
         if (typeof pembimbingDetail !== "undefined" && pembimbingDetail) {
           pembimbingDetail.destroy();
         }
+
+        var reloadBimbinganDataTable = function () {
+          var th = $$("menuPembimbing")
+            ? $$("menuPembimbing").getSelectedId()
+            : null;
+          var kelas = $$("selectBimbinganKelas")
+            ? $$("selectBimbinganKelas").getValue()
+            : null;
+
+          if (th && kelas) {
+            webix.message("Memuat data Aktifitas...");
+            var url =
+              "sopingi/pa_aktifitas/tampil/" +
+              wSiaMhs.apiKey +
+              "/" +
+              th +
+              "_" +
+              kelas;
+            $$("pembimbingRiwayatDataTable").clearAll();
+            $$("pembimbingRiwayatDataTable").define("url", url);
+            $$("pembimbingRiwayatDataTable").refresh();
+          }
+        };
         var panelKiriPembimbing = {
           id: "panelKiriPembimbing",
           borderless: false,
@@ -1433,6 +1456,9 @@ webix.ready(function () {
                 wSiaMhs.apiKey +
                 "/" +
                 Math.random(),
+              on: {
+                onAfterSelect: reloadBimbinganDataTable,
+              },
             },
           ],
         };
@@ -1451,6 +1477,9 @@ webix.ready(function () {
                   label: "Pilih Kelas",
                   width: 200,
                   options: "sopingi/kelas_pa/semua/" + wSiaMhs.apiKey + "/1",
+                  on: {
+                    onChange: reloadBimbinganDataTable,
+                  },
                 },
                 {
                   view: "button",
@@ -1733,45 +1762,8 @@ webix.ready(function () {
           },
         });
 
-        var reloadBimbinganDataTable = function () {
-          var kelas = $$("selectBimbinganKelas").getValue();
-          var th = $$("menuPembimbing").getSelectedId();
-
-          if (th && kelas) {
-            webix.message("Memuat data Aktifitas...");
-            $$("pembimbingRiwayatDataTable").clearAll();
-            $$("pembimbingRiwayatDataTable")
-              .load(
-                "sopingi/pa_aktifitas/tampil/" +
-                  wSiaMhs.apiKey +
-                  "/" +
-                  th +
-                  "_" +
-                  kelas,
-              )
-              .then(function () {
-                webix.message({
-                  type: "success",
-                  text: "Data berhasil dimuat",
-                  expire: 2000,
-                });
-              })
-              .fail(function () {
-                webix.message({ type: "error", text: "Gagal memuat data" });
-              });
-          }
-        };
-
         $$("pembimbingRiwayatRefresh").attachEvent(
           "onItemClick",
-          reloadBimbinganDataTable,
-        );
-        $$("menuPembimbing").attachEvent(
-          "onAfterSelect",
-          reloadBimbinganDataTable,
-        );
-        $$("selectBimbinganKelas").attachEvent(
-          "onChange",
           reloadBimbinganDataTable,
         );
         $$("selectBimbinganTampil").attachEvent(
