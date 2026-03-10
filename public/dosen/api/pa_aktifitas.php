@@ -120,7 +120,7 @@ if ($aksi=="tampil") {
 		    echo json_encode($hasil);
 	  }
 
-} else if ($aksi="aktifitas_mahasiswa") {
+} else if ($aksi=="aktifitas_mahasiswa") {
 
 	  $exp = explode("_", $id);
 	  $id_smt=$exp[0];
@@ -143,20 +143,22 @@ if ($aksi=="tampil") {
 		    foreach ($data_mhs as $item_mhs) {
 		    	$xid_reg_pd = $item_mhs->xid_reg_pd;
 		    	$perintah_aktifitas = "select * from wsia_kuliah_mahasiswa where xid_reg_pd='$xid_reg_pd' and id_smt='$id_smt'";
-		    	$qry 	= $db->prepare($perintah_mhs); 
+		    	$qry 	= $db->prepare($perintah_aktifitas); 
 			    $qry->execute();
 			    $data_aktifitas = $qry->fetch(PDO::FETCH_OBJ);
-			    if ($data_aktifitas->id_stat_mhs=="A") {
-			    	$mhs_aktif++;
-			    } else if ($data_aktifitas->id_stat_mhs=="N") {
-			    	$mhs_nonaktif++;
-			    } else if ($data_aktifitas->id_stat_mhs=="C") {
-			    	$mhs_cuti++;
-			    } else if ($data_aktifitas->id_stat_mhs=="K") {
-			    	$mhs_keluar++;
-			    } else if ($data_aktifitas->id_stat_mhs=="L") {
-			    	$mhs_keluar++;
-			    } 
+			    if ($data_aktifitas) {
+				    if ($data_aktifitas->id_stat_mhs=="A") {
+				    	$mhs_aktif++;
+				    } else if ($data_aktifitas->id_stat_mhs=="N") {
+				    	$mhs_nonaktif++;
+				    } else if ($data_aktifitas->id_stat_mhs=="C") {
+				    	$mhs_cuti++;
+				    } else if ($data_aktifitas->id_stat_mhs=="K") {
+				    	$mhs_keluar++;
+				    } else if ($data_aktifitas->id_stat_mhs=="L") {
+				    	$mhs_keluar++;
+				    } 
+			    }
 		    }
 
 		    $db		= null;
