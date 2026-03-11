@@ -176,7 +176,7 @@ var halamanAkun = new WebixView({
 
 /* HALAMAN PENGAJARAN */
 var panelKiriPengajaran = {
-	id: "panelKiriPengajaran", borderless: false, width: 150, rows: [
+	id: "panelKiriPengajaran", borderless: false, minWidth: 150, width: 200, rows: [
 		{
 			template: "Tahun Akademik",
 			type: "header"
@@ -285,7 +285,7 @@ var pengajaranDetail = new WebixView({
 			},
 			{
 				cols: [
-					panelKiriPengajaran, dosen_pengajaranRiwayat
+					panelKiriPengajaran, { view: "resizer" }, dosen_pengajaranRiwayat
 				]
 			}
 		]
@@ -642,7 +642,7 @@ var viewMahasiswaKelas = {
 
 //Tahun Angkatan
 var menuBimbinganAkademik = {
-	width: 150, borderless: false, rows: [
+	minWidth: 150, width: 200, borderless: false, rows: [
 		{
 			template: "Pilih Angkatan",
 			type: "header"
@@ -1704,7 +1704,7 @@ var masterMahasiswaDetail = {
 
 /* HALAMAN AKTIFITAS BIMBINGAN */
 var panelKiriPembimbing = {
-	id: "panelKiriPembimbing", borderless: false, width: 150, rows: [
+	id: "panelKiriPembimbing", borderless: false, minWidth: 150, width: 200, rows: [
 		{
 			template: "Tahun Akademik",
 			type: "header"
@@ -1816,7 +1816,7 @@ var pembimbingDetail = new WebixView({
 			},
 			{
 				cols: [
-					panelKiriPembimbing, dosen_pembimbingRiwayat
+					panelKiriPembimbing, { view: "resizer" }, dosen_pembimbingRiwayat
 				]
 			}
 		]

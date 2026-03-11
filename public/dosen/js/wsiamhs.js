@@ -228,7 +228,7 @@ webix.ready(function () {
               "sopingi/kelas_kuliah/tampil/" + wSiaMhs.apiKey + "/" + id,
             );
             $$("pengajaranRiwayatDataTable").refresh();
-          } catch (e) {}
+          } catch (e) { }
         });
 
         $$("pengajaranRiwayatRefresh").attachEvent("onItemClick", function () {
@@ -272,13 +272,7 @@ webix.ready(function () {
           $$("pengajaranRiwayatDataTable").select(id);
           var data = $$("pengajaranRiwayatDataTable").getItem(id);
           var idTa = $$("menuPengajaran").getSelectedId();
-          var tahun = idTa.substr(0, 4);
-          var smt = idTa.substr(4, 1);
-          if (smt % 2 == 0) {
-            var semester = tahun + "/" + (parseInt(tahun) + 1) + " Genap";
-          } else {
-            var semester = tahun + "/" + (parseInt(tahun) + 1) + " Ganjil";
-          }
+          var semester = $$("menuPengajaran").getItem(idTa).value;
 
           var dataPanelKelas = [
             { judul: "Program Studi:", konten: data.nm_lemb },
@@ -341,47 +335,47 @@ webix.ready(function () {
         };
 
         /*dimatikan - direvisi
-				$$('simpanPersenNilai').attachEvent("onItemClick", function(){
-					if ($$("formPersenNilai").validate()) {
-						var data= $$("pengajaranRiwayatDataTable").getSelectedItem();
-						var dataKirim = $$("formPersenNilai").getValues();				
-						dataKirim.aksi="persennilai";
-						dataKirim = JSON.stringify(dataKirim);
-						proses_tampil();
-						webix.ajax().post("sopingi/kelas_kuliah/aksi/"+wSiaMhs.apiKey+"/"+data.xid_kls,dataKirim,{
-							success: function(text, xml, xhr){
-								proses_hide();
-								var hasil = xml.json();
-								if (hasil.berhasil) {
-									webix.message(hasil.pesan);
-								} else {
-									webix.alert({
-										title: "Gagal Simpan",
-										text: "Gagal simpan persen nilai",
-										type:"alert-error"
-									});
-								}
-								
-							},
-							error:function(text, data, xhr){
-								proses_hide();
-								webix.alert({
-										title: "Gagal Koneksi",
-										text: "Tidak dapat terhubung dengan internet!",
-										type:"alert-error"
-								});
-							}    
-							    
-						});
-					} else {
-						webix.alert({
-								title: "Kesalahan",
-								text: "Persen Nilai Tidak Valid",
-								type:"alert-error"
-						});
-					}
-				});
-				*/
+        $$('simpanPersenNilai').attachEvent("onItemClick", function(){
+          if ($$("formPersenNilai").validate()) {
+            var data= $$("pengajaranRiwayatDataTable").getSelectedItem();
+            var dataKirim = $$("formPersenNilai").getValues();				
+            dataKirim.aksi="persennilai";
+            dataKirim = JSON.stringify(dataKirim);
+            proses_tampil();
+            webix.ajax().post("sopingi/kelas_kuliah/aksi/"+wSiaMhs.apiKey+"/"+data.xid_kls,dataKirim,{
+              success: function(text, xml, xhr){
+                proses_hide();
+                var hasil = xml.json();
+                if (hasil.berhasil) {
+                  webix.message(hasil.pesan);
+                } else {
+                  webix.alert({
+                    title: "Gagal Simpan",
+                    text: "Gagal simpan persen nilai",
+                    type:"alert-error"
+                  });
+                }
+              	
+              },
+              error:function(text, data, xhr){
+                proses_hide();
+                webix.alert({
+                    title: "Gagal Koneksi",
+                    text: "Tidak dapat terhubung dengan internet!",
+                    type:"alert-error"
+                });
+              }    
+                  
+            });
+          } else {
+            webix.alert({
+                title: "Kesalahan",
+                text: "Persen Nilai Tidak Valid",
+                type:"alert-error"
+            });
+          }
+        });
+        */
 
         $$("refreshMhsKelas").attachEvent("onItemClick", function () {
           var data = $$("pengajaranRiwayatDataTable").getSelectedItem();
@@ -466,9 +460,9 @@ webix.ready(function () {
                     $$("dataTableMahasiswaKelas").clearAll();
                     $$("dataTableMahasiswaKelas").load(
                       "sopingi/nilai/tampil/" +
-                        wSiaMhs.apiKey +
-                        "/" +
-                        data.xid_kls,
+                      wSiaMhs.apiKey +
+                      "/" +
+                      data.xid_kls,
                     );
                   } else {
                     peringatan("Kesalahan!", hasil.pesan);
@@ -551,9 +545,9 @@ webix.ready(function () {
                   .ajax()
                   .post(
                     "sopingi/nilai/kirim/" +
-                      wSiaMhs.apiKey +
-                      "/" +
-                      data.xid_kls,
+                    wSiaMhs.apiKey +
+                    "/" +
+                    data.xid_kls,
                     nilai,
                     {
                       success: function (response, data, xhr) {
@@ -567,9 +561,9 @@ webix.ready(function () {
                           $$("dataTableMahasiswaKelas").clearAll();
                           $$("dataTableMahasiswaKelas").load(
                             "sopingi/nilai/tampil/" +
-                              wSiaMhs.apiKey +
-                              "/" +
-                              data.xid_kls,
+                            wSiaMhs.apiKey +
+                            "/" +
+                            data.xid_kls,
                           );
                         } else {
                           peringatan("Kesalahan!", hasil.pesan);
@@ -617,7 +611,7 @@ webix.ready(function () {
               "sopingi/mahasiswa/tampil/" + wSiaMhs.apiKey + "/" + id,
             );
             $$("bimbinganAkademikRiwayatDataTable").refresh();
-          } catch (e) {}
+          } catch (e) { }
         });
 
         $$("bimbinganAkademikRiwayatRefresh").attachEvent(
@@ -642,10 +636,10 @@ webix.ready(function () {
             if (id) {
               window.open(
                 wSiaMhs.domain +
-                  "/dosen/sopingi/presensi_pdf/download/" +
-                  wSiaMhs.apiKey +
-                  "/" +
-                  id,
+                "/dosen/sopingi/presensi_pdf/download/" +
+                wSiaMhs.apiKey +
+                "/" +
+                id,
                 "_blank",
               );
             } else {
@@ -693,14 +687,14 @@ webix.ready(function () {
           $$("formMahasiswaDetail").setValues(data);
           $$("mahasiswaJudulWin").setValue(
             "Detail Mahasiswa: " +
-              data.nipd +
-              " - " +
-              data.nm_pd +
-              " ( " +
-              data.kelas +
-              " )" +
-              " - " +
-              data.vid_jns_daftar,
+            data.nipd +
+            " - " +
+            data.nm_pd +
+            " ( " +
+            data.kelas +
+            " )" +
+            " - " +
+            data.vid_jns_daftar,
           );
           $$("mahasiswaWin").show();
           $$("kontenMahasiswaDetail").setValue("viewMahasiswaDetail");
@@ -737,9 +731,9 @@ webix.ready(function () {
             $$("dataTableAktifitas").clearAll();
             $$("dataTableAktifitas").load(
               "sopingi/pa/kuliah_mahasiswa/" +
-                wSiaMhs.apiKey +
-                "/" +
-                dataMhs.xid_reg_pd,
+              wSiaMhs.apiKey +
+              "/" +
+              dataMhs.xid_reg_pd,
             );
           } else if (id == "jurnal_bimbingan") {
             $$("viewJurnalBimbingan").show();
@@ -816,9 +810,9 @@ webix.ready(function () {
               .ajax()
               .post(
                 "sopingi/pa/kelas_kuliah/" +
-                  wSiaMhs.apiKey +
-                  "/" +
-                  dataMhs.xid_reg_pd,
+                wSiaMhs.apiKey +
+                "/" +
+                dataMhs.xid_reg_pd,
                 dataKirim,
                 function (text, xml, xhr) {
                   var dataBelumKrs = JSON.parse(text);
@@ -873,9 +867,9 @@ webix.ready(function () {
                 .ajax()
                 .post(
                   "sopingi/pa/tambah_krs/" +
-                    wSiaMhs.apiKey +
-                    "/" +
-                    dataMhs.xid_reg_pd,
+                  wSiaMhs.apiKey +
+                  "/" +
+                  dataMhs.xid_reg_pd,
                   dataKirim,
                   function (response, data, xhr) {
                     var hasil = JSON.parse(response);
@@ -887,9 +881,9 @@ webix.ready(function () {
                       $$("dataTableKrs").clearAll();
                       $$("dataTableKrs").load(
                         "sopingi/pa/krs/" +
-                          wSiaMhs.apiKey +
-                          "/" +
-                          dataMhs.xid_reg_pd,
+                        wSiaMhs.apiKey +
+                        "/" +
+                        dataMhs.xid_reg_pd,
                       );
                       $$("formKRS").refresh();
                       $$("winKelasKuliah").hide();
@@ -954,9 +948,9 @@ webix.ready(function () {
                       .ajax()
                       .post(
                         "sopingi/pa/hapus_krs/" +
-                          wSiaMhs.apiKey +
-                          "/" +
-                          dataMhs.xid_reg_pd,
+                        wSiaMhs.apiKey +
+                        "/" +
+                        dataMhs.xid_reg_pd,
                         dataKirim,
                         function (response, data, xhr) {
                           var hasil = JSON.parse(response);
@@ -968,9 +962,9 @@ webix.ready(function () {
                             $$("dataTableKrs").clearAll();
                             $$("dataTableKrs").load(
                               "sopingi/pa/krs/" +
-                                wSiaMhs.apiKey +
-                                "/" +
-                                dataMhs.xid_reg_pd,
+                              wSiaMhs.apiKey +
+                              "/" +
+                              dataMhs.xid_reg_pd,
                             );
                           } else {
                             webix.alert({
@@ -1024,9 +1018,9 @@ webix.ready(function () {
           $$("dataTableAktifitas").clearAll();
           $$("dataTableAktifitas").load(
             "sopingi/pa/kuliah_mahasiswa/" +
-              wSiaMhs.apiKey +
-              "/" +
-              dataMhs.xid_reg_pd,
+            wSiaMhs.apiKey +
+            "/" +
+            dataMhs.xid_reg_pd,
           );
         });
 
@@ -1116,9 +1110,9 @@ webix.ready(function () {
               .ajax()
               .post(
                 "sopingi/pa/jurnal/" +
-                  wSiaMhs.apiKey +
-                  "/" +
-                  dataMhs.xid_reg_pd,
+                wSiaMhs.apiKey +
+                "/" +
+                dataMhs.xid_reg_pd,
                 dataKirim,
                 function (response, data, xhr) {
                   $$("formJurnal").enable();
@@ -1131,9 +1125,9 @@ webix.ready(function () {
                     $$("jurnalDataTable").clearAll();
                     $$("jurnalDataTable").load(
                       "sopingi/pa/jurnal/" +
-                        wSiaMhs.apiKey +
-                        "/" +
-                        dataMhs.xid_reg_pd,
+                      wSiaMhs.apiKey +
+                      "/" +
+                      dataMhs.xid_reg_pd,
                     );
                     $$("formJurnal").clear();
                     $$("winJurnal").hide();
@@ -1174,9 +1168,9 @@ webix.ready(function () {
                     .ajax()
                     .post(
                       "sopingi/pa/hapus_jurnal/" +
-                        wSiaMhs.apiKey +
-                        "/" +
-                        dataMhs.xid_reg_pd,
+                      wSiaMhs.apiKey +
+                      "/" +
+                      dataMhs.xid_reg_pd,
                       dataKirim,
                       function (response, data, xhr) {
                         var hasil = JSON.parse(response);
@@ -1188,9 +1182,9 @@ webix.ready(function () {
                           $$("jurnalDataTable").clearAll();
                           $$("jurnalDataTable").load(
                             "sopingi/pa/jurnal/" +
-                              wSiaMhs.apiKey +
-                              "/" +
-                              dataMhs.xid_reg_pd,
+                            wSiaMhs.apiKey +
+                            "/" +
+                            dataMhs.xid_reg_pd,
                           );
                         } else {
                           webix.alert({
@@ -1249,9 +1243,9 @@ webix.ready(function () {
                           .ajax()
                           .post(
                             "sopingi/pa/hapus_pesan/" +
-                              wSiaMhs.apiKey +
-                              "/" +
-                              Math.random(),
+                            wSiaMhs.apiKey +
+                            "/" +
+                            Math.random(),
                             dataKirim,
                             function (response, data, xhr) {
                               var hasil = JSON.parse(response);
@@ -1349,9 +1343,9 @@ webix.ready(function () {
                               .ajax()
                               .post(
                                 "sopingi/pa/kirim_pesan/" +
-                                  wSiaMhs.apiKey +
-                                  "/" +
-                                  Math.random(),
+                                wSiaMhs.apiKey +
+                                "/" +
+                                Math.random(),
                                 dataKirim,
                                 function (response, data, xhr) {
                                   $$("pesan").setValue("");
@@ -1418,7 +1412,8 @@ webix.ready(function () {
         var panelKiriPembimbing = {
           id: "panelKiriPembimbing",
           borderless: false,
-          width: 150,
+          minWidth: 150,
+          width: 200,
           rows: [
             {
               template: "Tahun Akademik",
@@ -1559,7 +1554,7 @@ webix.ready(function () {
                   this.data.each(function (obj, i) {
                     try {
                       obj.index = i + 1;
-                    } catch (e) {}
+                    } catch (e) { }
                   });
 
                   var jData = this.data.order.length;
@@ -1596,7 +1591,7 @@ webix.ready(function () {
                 template: "Aktifitas Bimbingan",
                 type: "header",
               },
-              { cols: [panelKiriPembimbing, dosen_pembimbingRiwayat] },
+              { cols: [panelKiriPembimbing, { view: "resizer" }, dosen_pembimbingRiwayat] },
             ],
           },
         });
@@ -1761,12 +1756,12 @@ webix.ready(function () {
           } else {
             window.open(
               wSiaMhs.domain +
-                "/dosen/sopingi/aktifitas_bimbingan_pdf/download/" +
-                wSiaMhs.apiKey +
-                "/" +
-                th +
-                "_" +
-                kelas,
+              "/dosen/sopingi/aktifitas_bimbingan_pdf/download/" +
+              wSiaMhs.apiKey +
+              "/" +
+              th +
+              "_" +
+              kelas,
               "_blank",
             );
           }
@@ -1789,11 +1784,11 @@ webix.ready(function () {
             $$("formPembimbing").clear();
             $$("formPembimbing").load(
               "sopingi/pa_aktifitas/aktifitas_mahasiswa/" +
-                wSiaMhs.apiKey +
-                "/" +
-                th +
-                "_" +
-                kelas,
+              wSiaMhs.apiKey +
+              "/" +
+              th +
+              "_" +
+              kelas,
             );
             $$("judulWinPembimbing").setValue("Tambah Aktifitas Bimbingan");
           }
@@ -1829,9 +1824,9 @@ webix.ready(function () {
                   .ajax()
                   .post(
                     "sopingi/pa_aktifitas/hapus/" +
-                      wSiaMhs.apiKey +
-                      "/" +
-                      Math.random(),
+                    wSiaMhs.apiKey +
+                    "/" +
+                    Math.random(),
                     dataKirim,
                     function (response, data, xhr) {
                       var hasil = JSON.parse(response);

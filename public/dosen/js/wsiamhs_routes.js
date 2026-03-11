@@ -325,7 +325,8 @@ var halamanAkun = new WebixView({
 var panelKiriPengajaran = {
   id: "panelKiriPengajaran",
   borderless: false,
-  width: 150,
+  minWidth: 150,
+  width: 200,
   rows: [
     {
       template: "Tahun Akademik",
@@ -448,7 +449,7 @@ var pengajaranDetail = new WebixView({
         template: "Pengajaran",
         type: "header",
       },
-      { cols: [panelKiriPengajaran, dosen_pengajaranRiwayat] },
+      { cols: [panelKiriPengajaran, { view: "resizer" }, dosen_pengajaranRiwayat] },
     ],
   },
 });
@@ -1033,7 +1034,8 @@ var viewMahasiswaKelas = {
 
 //Tahun Angkatan
 var menuBimbinganAkademik = {
-  width: 150,
+  minWidth: 150,
+  width: 200,
   borderless: false,
   rows: [
     {
@@ -1177,7 +1179,7 @@ var viewBimbinganAkademik = new WebixView({
         template: "Bimbingan mahasiswa",
         type: "header",
       },
-      { cols: [menuBimbinganAkademik, riwayatBimbinganAkademik] },
+      { cols: [menuBimbinganAkademik, { view: "resizer" }, riwayatBimbinganAkademik] },
     ],
   },
 });
@@ -3624,7 +3626,8 @@ function createPanelKiriPembimbing() {
   return {
     id: "panelKiriPembimbing",
     borderless: false,
-    width: 150,
+    minWidth: 150,
+    width: 200,
     rows: [
       {
         template: "Tahun Akademik",
