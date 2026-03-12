@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 error_reporting(0);
 if (!isset($key)) {
 	exit();
@@ -140,22 +140,22 @@ else if ($aksi == "tambah") {
 	$vtgl_lahir = $thn . "/" . $bln . "/" . $tgl;
 
 	$jk = clean($data->jk);
-	$id_agama = clean($data->id_agama);
+	$id_agama = empty($data->id_agama) ? 0 : clean($data->id_agama);
 	$nik = clean($data->nik);
 	//$negara		= clean($data->negara);
 	$negara = "ID";
 	$jln = clean($data->jln);
 	$nm_dsn = clean($data->nm_dsn);
-	$rt = clean($data->rt);
-	$rw = clean($data->rw);
+	$rt = empty($data->rt) ? 0 : clean($data->rt);
+	$rw = empty($data->rw) ? 0 : clean($data->rw);
 	$ds_kel = clean($data->ds_kel);
 	$kode_pos = clean($data->kode_pos);
 	$id_wil = clean($data->id_wil);
-	$id_jns_tinggal = clean($data->id_jns_tinggal);
+	$id_jns_tinggal = empty($data->id_jns_tinggal) ? 0 : clean($data->id_jns_tinggal);
 	$telepon_rumah = clean($data->telepon_rumah);
 	$telepon_seluler = clean($data->telepon_seluler);
 	$email = clean($data->email);
-	$a_terima_kps = clean($data->a_terima_kps);
+	$a_terima_kps = (isset($data->a_terima_kps) && $data->a_terima_kps !== "") ? clean($data->a_terima_kps) : 0;
 	$no_kps = $data->no_kps;
 	$nm_ayah = clean($data->nm_ayah);
 	$tgl_lahir_ayah = clean($data->tgl_lahir_ayah);
@@ -164,9 +164,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_ayah, 6, 4);
 	$vtgl_lahir_ayah = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ayah = clean($data->id_jenjang_pendidikan_ayah);
-	$id_pekerjaan_ayah = clean($data->id_pekerjaan_ayah);
-	$id_penghasilan_ayah = clean($data->id_penghasilan_ayah);
+	$id_jenjang_pendidikan_ayah = empty($data->id_jenjang_pendidikan_ayah) ? 0 : clean($data->id_jenjang_pendidikan_ayah);
+	$id_pekerjaan_ayah = empty($data->id_pekerjaan_ayah) ? 0 : clean($data->id_pekerjaan_ayah);
+	$id_penghasilan_ayah = empty($data->id_penghasilan_ayah) ? 0 : clean($data->id_penghasilan_ayah);
 	$nm_ibu_kandung = clean($data->nm_ibu_kandung);
 	$tgl_lahir_ibu = clean($data->tgl_lahir_ibu);
 	$tgl = substr($tgl_lahir_ibu, 0, 2);
@@ -174,9 +174,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_ibu, 6, 4);
 	$vtgl_lahir_ibu = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ibu = clean($data->id_jenjang_pendidikan_ibu);
-	$id_pekerjaan_ibu = clean($data->id_pekerjaan_ibu);
-	$id_penghasilan_ibu = clean($data->id_penghasilan_ibu);
+	$id_jenjang_pendidikan_ibu = empty($data->id_jenjang_pendidikan_ibu) ? 0 : clean($data->id_jenjang_pendidikan_ibu);
+	$id_pekerjaan_ibu = empty($data->id_pekerjaan_ibu) ? 0 : clean($data->id_pekerjaan_ibu);
+	$id_penghasilan_ibu = empty($data->id_penghasilan_ibu) ? 0 : clean($data->id_penghasilan_ibu);
 	$nm_wali = clean($data->nm_wali);
 	$tgl_lahir_wali = clean($data->tgl_lahir_wali);
 	$tgl = substr($tgl_lahir_wali, 0, 2);
@@ -184,9 +184,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_wali, 6, 4);
 	$vtgl_lahir_wali = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_wali = clean($data->id_jenjang_pendidikan_wali);
-	$id_pekerjaan_wali = clean($data->id_pekerjaan_wali);
-	$id_penghasilan_wali = clean($data->id_penghasilan_wali);
+	$id_jenjang_pendidikan_wali = empty($data->id_jenjang_pendidikan_wali) ? 0 : clean($data->id_jenjang_pendidikan_wali);
+	$id_pekerjaan_wali = empty($data->id_pekerjaan_wali) ? 0 : clean($data->id_pekerjaan_wali);
+	$id_penghasilan_wali = empty($data->id_penghasilan_wali) ? 0 : clean($data->id_penghasilan_wali);
 
 	$mhs_a_kk_a = $data->mhs_a_kk_a;
 	$mhs_a_kk_b = $data->mhs_a_kk_b;
@@ -341,23 +341,23 @@ else if ($aksi == "ubah") {
 	$vtgl_lahir = $thn . "/" . $bln . "/" . $tgl;
 
 	$jk = clean($data->jk);
-	$id_agama = clean($data->id_agama);
+	$id_agama = empty($data->id_agama) ? 0 : clean($data->id_agama);
 	$no_kk = clean($data->no_kk);
 	$nik = clean($data->nik);
 	//$negara		= clean($data->negara);
 	$negara = "ID";
 	$jln = clean($data->jln);
 	$nm_dsn = clean($data->nm_dsn);
-	$rt = clean($data->rt);
-	$rw = clean($data->rw);
+	$rt = empty($data->rt) ? 0 : clean($data->rt);
+	$rw = empty($data->rw) ? 0 : clean($data->rw);
 	$ds_kel = clean($data->ds_kel);
 	$kode_pos = clean($data->kode_pos);
 	$id_wil = clean($data->id_wil);
-	$id_jns_tinggal = clean($data->id_jns_tinggal);
+	$id_jns_tinggal = empty($data->id_jns_tinggal) ? 0 : clean($data->id_jns_tinggal);
 	$telepon_rumah = clean($data->telepon_rumah);
 	$telepon_seluler = clean($data->telepon_seluler);
 	$email = clean($data->email);
-	$a_terima_kps = clean($data->a_terima_kps);
+	$a_terima_kps = (isset($data->a_terima_kps) && $data->a_terima_kps !== "") ? clean($data->a_terima_kps) : 0;
 	$no_kps = $data->no_kps;
 	$nm_ayah = clean($data->nm_ayah);
 	$tgl_lahir_ayah = clean($data->tgl_lahir_ayah);
@@ -366,9 +366,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_ayah, 6, 4);
 	$vtgl_lahir_ayah = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ayah = clean($data->id_jenjang_pendidikan_ayah);
-	$id_pekerjaan_ayah = clean($data->id_pekerjaan_ayah);
-	$id_penghasilan_ayah = clean($data->id_penghasilan_ayah);
+	$id_jenjang_pendidikan_ayah = empty($data->id_jenjang_pendidikan_ayah) ? 0 : clean($data->id_jenjang_pendidikan_ayah);
+	$id_pekerjaan_ayah = empty($data->id_pekerjaan_ayah) ? 0 : clean($data->id_pekerjaan_ayah);
+	$id_penghasilan_ayah = empty($data->id_penghasilan_ayah) ? 0 : clean($data->id_penghasilan_ayah);
 	$nm_ibu_kandung = clean($data->nm_ibu_kandung);
 	$tgl_lahir_ibu = clean($data->tgl_lahir_ibu);
 	$tgl = substr($tgl_lahir_ibu, 0, 2);
@@ -376,9 +376,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_ibu, 6, 4);
 	$vtgl_lahir_ibu = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ibu = clean($data->id_jenjang_pendidikan_ibu);
-	$id_pekerjaan_ibu = clean($data->id_pekerjaan_ibu);
-	$id_penghasilan_ibu = clean($data->id_penghasilan_ibu);
+	$id_jenjang_pendidikan_ibu = empty($data->id_jenjang_pendidikan_ibu) ? 0 : clean($data->id_jenjang_pendidikan_ibu);
+	$id_pekerjaan_ibu = empty($data->id_pekerjaan_ibu) ? 0 : clean($data->id_pekerjaan_ibu);
+	$id_penghasilan_ibu = empty($data->id_penghasilan_ibu) ? 0 : clean($data->id_penghasilan_ibu);
 	$nm_wali = clean($data->nm_wali);
 	$tgl_lahir_wali = clean($data->tgl_lahir_wali);
 	$tgl = substr($tgl_lahir_wali, 0, 2);
@@ -386,9 +386,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_wali, 6, 4);
 	$vtgl_lahir_wali = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_wali = clean($data->id_jenjang_pendidikan_wali);
-	$id_pekerjaan_wali = clean($data->id_pekerjaan_wali);
-	$id_penghasilan_wali = clean($data->id_penghasilan_wali);
+	$id_jenjang_pendidikan_wali = empty($data->id_jenjang_pendidikan_wali) ? 0 : clean($data->id_jenjang_pendidikan_wali);
+	$id_pekerjaan_wali = empty($data->id_pekerjaan_wali) ? 0 : clean($data->id_pekerjaan_wali);
+	$id_penghasilan_wali = empty($data->id_penghasilan_wali) ? 0 : clean($data->id_penghasilan_wali);
 
 	$mhs_a_kk_a = $data->mhs_a_kk_a;
 	$mhs_a_kk_b = $data->mhs_a_kk_b;

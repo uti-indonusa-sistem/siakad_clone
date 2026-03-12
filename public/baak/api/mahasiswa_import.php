@@ -66,7 +66,7 @@ if ($aksi=="import") {
 			$telepon_rumah= clean($item->telp_ortu);
 			$telepon_seluler= clean($item->telepon);
 			$email		= clean($item->email);
-			$a_terima_kps	= "";
+			$a_terima_kps	= "0";
 			$no_kps		= "";
 			$nm_ayah	= clean($item->nama_ortu);
 			$vtgl_lahir_ayah= "";
