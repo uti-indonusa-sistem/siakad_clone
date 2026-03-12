@@ -18,7 +18,7 @@ class Security {
      * @return string
      */
     public static function sanitizeString($input) {
-        if (empty($input)) return '';
+        if ($input === null || $input === '') return '';
         $input = strip_tags($input);
         return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
     }
