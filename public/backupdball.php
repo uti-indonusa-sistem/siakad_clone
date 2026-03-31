@@ -37,18 +37,93 @@ $log[] = "Mulai proses backup khusus Database & Konfigurasi...";
 // 2. Siapkan Direktori Sementara Kecil di /tmp
 $tmp_dir = "/tmp/backup_data_{$date}";
 if (!is_dir($tmp_dir)) {
-    mkdir($tmp_dir, 0777, true);
+    @mkdir($tmp_dir, 0777, true);
 }
 
 // 3. Backup Database
-$log[] = "=> Dumping Database...";
+$log[] = "=> Dumping Database secara native melalu PHP PDO...";
 $sql_file = "{$tmp_dir}/database_{$date}.sql";
-if ($db_name === "ALL") {
-    $cmd_dump = "mysqldump -u'{$db_user}' -p'{$db_pass}' --all-databases > '{$sql_file}' 2>/dev/null";
-} else {
-    $cmd_dump = "mysqldump -u'{$db_user}' -p'{$db_pass}' '{$db_name}' > '{$sql_file}' 2>/dev/null";
+
+function backupDatabaseNative($host, $user, $pass, $dbname, $sql_file) {
+    try {
+        $pdo = new PDO("mysql:host={$host};charset=utf8mb4", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $fp = fopen($sql_file, 'w');
+        if (!$fp) return "Gagal membuat file SQL.";
+
+        $databases = [];
+        if ($dbname === "ALL") {
+            $stmt = $pdo->query("SHOW DATABASES");
+            while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+                if (!in_array($row[0], ['information_schema', 'performance_schema', 'mysql', 'sys'])) {
+                    $databases[] = $row[0];
+                }
+            }
+        } else {
+            $databases[] = $dbname;
+        }
+
+        foreach ($databases as $db) {
+            fwrite($fp, "-- Database: `{$db}`\n");
+            fwrite($fp, "CREATE DATABASE IF NOT EXISTS `{$db}`;\n");
+            fwrite($fp, "USE `{$db}`;\n\n");
+            
+            $pdo->exec("USE `{$db}`");
+            $tables = [];
+            $stmt = $pdo->query("SHOW TABLES");
+            while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+                $tables[] = $row[0];
+            }
+            
+            foreach ($tables as $table) {
+                // Jangan gunakan transaction atau table lock global untuk hindari timeout/permission error
+                $stmt = $pdo->query("SHOW CREATE TABLE `{$table}`");
+                $createTable = $stmt->fetch(PDO::FETCH_NUM);
+                if (isset($createTable[1])) {
+                    fwrite($fp, "DROP TABLE IF EXISTS `{$table}`;\n");
+                    fwrite($fp, $createTable[1] . ";\n\n");
+                    
+                    $rows = $pdo->query("SELECT * FROM `{$table}`");
+                    if ($rows->rowCount() > 0) {
+                        $colsCount = $rows->columnCount();
+                        while ($row = $rows->fetch(PDO::FETCH_NUM)) {
+                            $values = [];
+                            for ($i = 0; $i < $colsCount; $i++) {
+                                if (!isset($row[$i])) {
+                                    $values[] = "NULL";
+                                } else {
+                                    $values[] = $pdo->quote($row[$i]);
+                                }
+                            }
+                            fwrite($fp, "INSERT INTO `{$table}` VALUES(" . implode(",", $values) . ");\n");
+                        }
+                    }
+                    fwrite($fp, "\n\n");
+                }
+            }
+        }
+        fclose($fp);
+        return true;
+    } catch (Exception $e) {
+        return "Error Dumping DB: " . $e->getMessage();
+    }
 }
-shell_exec($cmd_dump);
+
+// Menjalankan backup DB native (Hostname default '116.206.197.228' mengikuti config atau 'localhost' jika db di internal)
+$dbhost = "116.206.197.228"; 
+$db_backup_res = backupDatabaseNative($dbhost, $db_user, $db_pass, $db_name, $sql_file);
+
+if ($db_backup_res !== true) {
+    // Apabila gagal karena IP public, coba localhost (fallback)
+    $db_backup_res = backupDatabaseNative("localhost", $db_user, $db_pass, $db_name, $sql_file);
+}
+
+if ($db_backup_res !== true) {
+    $log[] = "   [!] " . $db_backup_res;
+} else {
+    $log[] = "   [v] Berhasil Dump DB";
+}
 
 // 4. Ambil Informasi System & Requirement
 $log[] = "=> Mengumpulkan informasi server & requirements...";
@@ -56,62 +131,83 @@ $sys_info_file = "{$tmp_dir}/system_requirements.txt";
 
 $sysinfo = "=== SYSTEM REQUIREMENTS ===\n";
 $sysinfo .= "Date Backup: {$date}\n";
-$sysinfo .= "Hostname: " . trim((string) shell_exec("hostname")) . "\n";
-$sysinfo .= "OS: " . trim((string) shell_exec("grep PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '\"'")) . "\n";
-$sysinfo .= "--------------------------------\n";
-$sysinfo .= trim((string) shell_exec("nginx -v 2>&1")) ?: "Nginx not installed";
-$sysinfo .= "\n";
-$sysinfo .= trim((string) shell_exec("mysql -V 2>&1")) ?: "MySQL/MariaDB not installed";
-$sysinfo .= "\n";
-$sysinfo .= trim((string) shell_exec("php -v 2>&1")) ?: "PHP not installed";
-$sysinfo .= "\n";
-
+$sysinfo .= "Hostname: " . php_uname('n') . "\n";
+$sysinfo .= "OS: " . php_uname('s') . " " . php_uname('r') . " " . php_uname('v') . " " . php_uname('m') . "\n";
+$sysinfo .= "Server Software: " . ($_SERVER['SERVER_SOFTWARE'] ?? "Unknown") . "\n";
+$sysinfo .= "PHP Version: " . phpversion() . "\n";
 file_put_contents($sys_info_file, $sysinfo);
 
-// Ambil list paket terinstall
-shell_exec("dpkg -l | grep -E '^ii' | awk '{print $2 \" \" $3}' > '{$tmp_dir}/installed_packages.txt' 2>/dev/null");
-
-// 5. Mengompresi File Secara Langsung
-$log[] = "=> Mengkompresi ZIP...";
+// 5. Mengompresi File Secara Langsung dengan ZipArchive
+$log[] = "=> Mengkompresi ZIP melalui modul PHP ZipArchive...";
 $final_zip_path = "{$tmp_dir}/{$final_zip}";
 
-// Hapus slash di awal direktori untuk eksekusi relatif dari folder root "/"
-$nginx_zip_path = ltrim($nginx_dir, '/');
-$php_zip_path = ltrim($php_dir, '/');
+function addFolderToZip($dir, $zipArchive, $zipdir = '') {
+    if (!is_dir($dir)) return;
+    $files = @scandir($dir);
+    if (!$files) return;
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') continue;
+        $filePath = $dir . '/' . $file;
+        $localPath = $zipdir ? $zipdir . '/' . $file : $file;
+        if (is_dir($filePath)) {
+            $zipArchive->addEmptyDir($localPath);
+            addFolderToZip($filePath, $zipArchive, $localPath);
+        } else {
+            // Zip file hanya jika readable
+            if (is_readable($filePath)) {
+                $zipArchive->addFile($filePath, $localPath);
+            }
+        }
+    }
+}
 
-// Pastikan command zip berjalan di root
-$cmd_zip = "cd / && zip -q -r '{$final_zip_path}' '{$nginx_zip_path}' '{$php_zip_path}' 2>/dev/null";
-shell_exec($cmd_zip);
-
-// Tambahkan SQL dan file txt ke dalam file zip tersebut
-$cmd_zip_update = "cd '{$tmp_dir}' && zip -q -u '{$final_zip}' 'database_{$date}.sql' 'system_requirements.txt' 'installed_packages.txt' 2>/dev/null";
-shell_exec($cmd_zip_update);
+$zip = new ZipArchive();
+if ($zip->open($final_zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+    if (file_exists($sql_file)) {
+        $zip->addFile($sql_file, "database_{$date}.sql");
+    }
+    if (file_exists($sys_info_file)) {
+        $zip->addFile($sys_info_file, "system_requirements.txt");
+    }
+    
+    // Add Nginx config
+    $log[] = "   Menyertakan /etc/nginx jika dapat diakses...";
+    addFolderToZip($nginx_dir, $zip, basename($nginx_dir));
+    
+    // Add PHP config
+    $log[] = "   Menyertakan /etc/php jika dapat diakses...";
+    addFolderToZip($php_dir, $zip, basename($php_dir));
+    
+    $zip->close();
+} else {
+    $log[] = "   [!] Gagal membuat file ZIP. Pastikan modul PHP zip aktif.";
+}
 
 // 6. Pindahkan zip dan Cleanup
 $log[] = "=> Menyelesaikan proses dan membersihkan temporary files...";
 $is_moved = false;
 $final_file_path = $final_zip_path;
 
-// Pindahkan ke final destination HANYA jika folder tersebut bisa ditulis oleh web-server user (misal www-data)
-if (is_dir($final_destination) && is_writable($final_destination)) {
-    if (rename($final_zip_path, "{$final_destination}/{$final_zip}")) {
+if (is_dir($final_destination) && is_writable($final_destination) && file_exists($final_zip_path)) {
+    if (@rename($final_zip_path, "{$final_destination}/{$final_zip}")) {
         $final_file_path = "{$final_destination}/{$final_zip}";
         $is_moved = true;
     }
 }
 
 // Cleanup txt dan sql
-@unlink("{$tmp_dir}/database_{$date}.sql");
-@unlink("{$tmp_dir}/system_requirements.txt");
-@unlink("{$tmp_dir}/installed_packages.txt");
+@unlink($sql_file);
+@unlink($sys_info_file);
 
 if ($is_moved) {
-    // Apabila zip sudah terpindah ke home, hapus folder tmp-nya
     @rmdir($tmp_dir);
 }
 
 $log[] = "==========================================";
 $log[] = "Backup Database & Konfigurasi selesai!";
+if (file_exists($final_file_path)) {
+    $log[] = "Ukuran File: " . round(filesize($final_file_path) / 1024 / 1024, 2) . " MB";
+}
 $log[] = "File terakhir tersimpan di: {$final_file_path}";
 $log[] = "Catatan: Source Code harap di backup secara terpisah / manual!";
 $log[] = "==========================================";
@@ -120,9 +216,7 @@ $log[] = "==========================================";
 // AKSES BROWSER: AUTO-DOWNLOAD FILE ZIP
 // ==========================================
 if (php_sapi_name() !== 'cli') {
-    // Jika diakses via browser web, otomatis download ZIP
     if (file_exists($final_file_path)) {
-        // Matikan output buffer tambahan agar transfer file zip bersih
         if (ob_get_length()) {
             ob_end_clean();
         }
@@ -135,10 +229,8 @@ if (php_sapi_name() !== 'cli') {
         header('Pragma: public');
         header('Content-Length: ' . filesize($final_file_path));
 
-        // Baca file ke output browser
         readfile($final_file_path);
 
-        // Jika file zip tidak dipindah ke /home/utis (karena masalah permission), hapus dari folder tmp setelah didownload untuk hemat space
         if (!$is_moved) {
             @unlink($final_file_path);
             @rmdir($tmp_dir);
@@ -147,9 +239,8 @@ if (php_sapi_name() !== 'cli') {
     } else {
         echo "<h1>Gagal membuat ZIP! Periksa log:</h1>";
         echo "<pre>" . implode("\n", $log) . "</pre>";
-        echo "<p>Catatan: Kemungkinan user php (<i>www-data</i>) tidak memiliki hak akses yang cukup untuk menjalankan command <code>zip</code> atau tidak dapat membaca direktori nginx/php.</p>";
+        echo "<p>Catatan: Kemungkinan hak akses folder tidak mencukupi untuk modul ZipArchive.</p>";
     }
 } else {
-    // Jika masih diakses via CLI / Terminal biasa
     echo implode("\n", $log) . "\n";
 }
