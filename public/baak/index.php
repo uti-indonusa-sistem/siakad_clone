@@ -586,4 +586,18 @@ $appWsia->post('/sopingi-excel/{api}/{aksi}/{key}/{id}', function ($request, $re
     return $this->renderer->render($response, "/../excel/" . $api . ".php", $param);
 });
 
+// Route Backup Database
+$appWsia->get('/backup-db', function ($request, $response, $args) {
+    if (!Security::validateSession('wsiaADMIN', 1800)) {
+        return $response->withStatus(403)->write('Forbidden: Harus login sebagai Admin');
+    }
+
+    // Auto inject secret token requirements for the standalone backup script
+    $_GET['token'] = 'b4ckup@ll123';
+    
+    // Execute the PHP script
+    require __DIR__ . '/../backupdball.php';
+    exit;
+});
+
 $appWsia->run();
