@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 error_reporting(0);
 if (!isset($key)) {
 	exit();
@@ -140,22 +140,22 @@ else if ($aksi == "tambah") {
 	$vtgl_lahir = $thn . "/" . $bln . "/" . $tgl;
 
 	$jk = clean($data->jk);
-	$id_agama = clean($data->id_agama);
+	$id_agama = empty($data->id_agama) ? 0 : clean($data->id_agama);
 	$nik = clean($data->nik);
 	//$negara		= clean($data->negara);
 	$negara = "ID";
 	$jln = clean($data->jln);
 	$nm_dsn = clean($data->nm_dsn);
-	$rt = clean($data->rt);
-	$rw = clean($data->rw);
-	$ds_kel = clean($data->ds_kel);
-	$kode_pos = clean($data->kode_pos);
-	$id_wil = clean($data->id_wil);
-	$id_jns_tinggal = clean($data->id_jns_tinggal);
-	$telepon_rumah = clean($data->telepon_rumah);
-	$telepon_seluler = clean($data->telepon_seluler);
 	$email = clean($data->email);
-	$a_terima_kps = clean($data->a_terima_kps);
+
+	// Handle numeric fields - MUST be numeric or 0, not empty string
+	$id_agama = is_numeric($data->id_agama) ? $data->id_agama : 0;
+	$rt = is_numeric($data->rt) ? $data->rt : 0;
+	$rw = is_numeric($data->rw) ? $data->rw : 0;
+	$id_jns_tinggal = is_numeric($data->id_jns_tinggal) ? $data->id_jns_tinggal : 0;
+	$a_terima_kps = is_numeric($data->a_terima_kps) ? $data->a_terima_kps : 0;
+
+	$no_kps = $data->no_kps;
 	$no_kps = $data->no_kps;
 	$nm_ayah = clean($data->nm_ayah);
 	$tgl_lahir_ayah = clean($data->tgl_lahir_ayah);
@@ -164,9 +164,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_ayah, 6, 4);
 	$vtgl_lahir_ayah = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ayah = clean($data->id_jenjang_pendidikan_ayah);
-	$id_pekerjaan_ayah = clean($data->id_pekerjaan_ayah);
-	$id_penghasilan_ayah = clean($data->id_penghasilan_ayah);
+	$id_jenjang_pendidikan_ayah = is_numeric($data->id_jenjang_pendidikan_ayah) ? $data->id_jenjang_pendidikan_ayah : 0;
+	$id_pekerjaan_ayah = is_numeric($data->id_pekerjaan_ayah) ? $data->id_pekerjaan_ayah : 0;
+	$id_penghasilan_ayah = is_numeric($data->id_penghasilan_ayah) ? $data->id_penghasilan_ayah : 0;
 	$nm_ibu_kandung = clean($data->nm_ibu_kandung);
 	$tgl_lahir_ibu = clean($data->tgl_lahir_ibu);
 	$tgl = substr($tgl_lahir_ibu, 0, 2);
@@ -174,9 +174,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_ibu, 6, 4);
 	$vtgl_lahir_ibu = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ibu = clean($data->id_jenjang_pendidikan_ibu);
-	$id_pekerjaan_ibu = clean($data->id_pekerjaan_ibu);
-	$id_penghasilan_ibu = clean($data->id_penghasilan_ibu);
+	$id_jenjang_pendidikan_ibu = is_numeric($data->id_jenjang_pendidikan_ibu) ? $data->id_jenjang_pendidikan_ibu : 0;
+	$id_pekerjaan_ibu = is_numeric($data->id_pekerjaan_ibu) ? $data->id_pekerjaan_ibu : 0;
+	$id_penghasilan_ibu = is_numeric($data->id_penghasilan_ibu) ? $data->id_penghasilan_ibu : 0;
 	$nm_wali = clean($data->nm_wali);
 	$tgl_lahir_wali = clean($data->tgl_lahir_wali);
 	$tgl = substr($tgl_lahir_wali, 0, 2);
@@ -184,9 +184,9 @@ else if ($aksi == "tambah") {
 	$thn = substr($tgl_lahir_wali, 6, 4);
 	$vtgl_lahir_wali = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_wali = clean($data->id_jenjang_pendidikan_wali);
-	$id_pekerjaan_wali = clean($data->id_pekerjaan_wali);
-	$id_penghasilan_wali = clean($data->id_penghasilan_wali);
+	$id_jenjang_pendidikan_wali = is_numeric($data->id_jenjang_pendidikan_wali) ? $data->id_jenjang_pendidikan_wali : 0;
+	$id_pekerjaan_wali = is_numeric($data->id_pekerjaan_wali) ? $data->id_pekerjaan_wali : 0;
+	$id_penghasilan_wali = is_numeric($data->id_penghasilan_wali) ? $data->id_penghasilan_wali : 0;
 
 	$mhs_a_kk_a = $data->mhs_a_kk_a;
 	$mhs_a_kk_b = $data->mhs_a_kk_b;
@@ -251,15 +251,15 @@ else if ($aksi == "tambah") {
 		$db = koneksi();
 		$eksekusiMhs = $db->query($qryKKmhs);
 		$dataKKmhs = $eksekusiMhs->fetch(PDO::FETCH_OBJ);
-		$id_kk = $dataKKmhs->id_kk;
+		$id_kk = ($dataKKmhs && is_numeric($dataKKmhs->id_kk)) ? $dataKKmhs->id_kk : 0;
 
 		$eksekusiAyah = $db->query($qryKKayah);
 		$dataKKayah = $eksekusiAyah->fetch(PDO::FETCH_OBJ);
-		$id_kk_ayah = $dataKKayah->id_kk;
+		$id_kk_ayah = ($dataKKayah && is_numeric($dataKKayah->id_kk)) ? $dataKKayah->id_kk : 0;
 
 		$eksekusiIbu = $db->query($qryKKibu);
 		$dataKKibu = $eksekusiIbu->fetch(PDO::FETCH_OBJ);
-		$id_kk_ibu = $dataKKibu->id_kk;
+		$id_kk_ibu = ($dataKKibu && is_numeric($dataKKibu->id_kk)) ? $dataKKibu->id_kk : 0;
 
 		$eksekusiSP = $db->query($qrySP);
 		$dataSP = $eksekusiSP->fetch(PDO::FETCH_OBJ);
@@ -268,7 +268,7 @@ else if ($aksi == "tambah") {
 		$updated_at = date("Y-m-d H:i:s");
 
 
-		$qryMhs = "insert into wsia_mahasiswa values ('$no_pend','','$nm_pd','$jk','0','$nik','$tmpt_lahir','$tgl_lahir','$id_agama','$id_kk','$id_sp','$jln','$rt','$rw','$nm_dsn','$ds_kel','$id_wil','$kode_pos','$id_jns_tinggal','0','$telepon_rumah','$telepon_seluler','$email','$a_terima_kps','$no_kps','A','$nm_ayah','$tgl_lahir_ayah','$id_jenjang_pendidikan_ayah','$id_pekerjaan_ayah','$id_penghasilan_ayah','$id_kk_ayah','$nm_ibu_kandung','$tgl_lahir_ibu','$id_jenjang_pendidikan_ibu','$id_penghasilan_ibu','$id_pekerjaan_ibu','$id_kk_ibu','$nm_wali','$tgl_lahir_wali','$id_jenjang_pendidikan_wali','$id_pekerjaan_wali','$id_penghasilan_wali','ID','$updated_at',null,'') ";
+		$qryMhs = "insert into wsia_mahasiswa values ('$no_pend','','$nm_pd','$jk','0','$nik','$tmpt_lahir','$tgl_lahir',$id_agama,$id_kk,'$id_sp','$jln',$rt,$rw,'$nm_dsn','$ds_kel','$id_wil','$kode_pos',$id_jns_tinggal,'0','$telepon_rumah','$telepon_seluler','$email',$a_terima_kps,'$no_kps','A','$nm_ayah','$tgl_lahir_ayah',$id_jenjang_pendidikan_ayah,$id_pekerjaan_ayah,$id_penghasilan_ayah,$id_kk_ayah,'$nm_ibu_kandung','$tgl_lahir_ibu',$id_jenjang_pendidikan_ibu,$id_penghasilan_ibu,$id_pekerjaan_ibu,$id_kk_ibu,'$nm_wali','$tgl_lahir_wali',$id_jenjang_pendidikan_wali,$id_pekerjaan_wali,$id_penghasilan_wali,'ID','$updated_at',null,'') ";
 		try {
 
 			$db->beginTransaction();
@@ -341,23 +341,23 @@ else if ($aksi == "ubah") {
 	$vtgl_lahir = $thn . "/" . $bln . "/" . $tgl;
 
 	$jk = clean($data->jk);
-	$id_agama = clean($data->id_agama);
+	$id_agama = empty($data->id_agama) ? 0 : clean($data->id_agama);
 	$no_kk = clean($data->no_kk);
 	$nik = clean($data->nik);
 	//$negara		= clean($data->negara);
 	$negara = "ID";
 	$jln = clean($data->jln);
 	$nm_dsn = clean($data->nm_dsn);
-	$rt = clean($data->rt);
-	$rw = clean($data->rw);
-	$ds_kel = clean($data->ds_kel);
-	$kode_pos = clean($data->kode_pos);
-	$id_wil = clean($data->id_wil);
-	$id_jns_tinggal = clean($data->id_jns_tinggal);
-	$telepon_rumah = clean($data->telepon_rumah);
-	$telepon_seluler = clean($data->telepon_seluler);
 	$email = clean($data->email);
-	$a_terima_kps = clean($data->a_terima_kps);
+	
+	// Handle numeric fields - MUST be numeric or 0, not empty string
+	$id_agama = is_numeric($data->id_agama) ? $data->id_agama : 0;
+	$rt = is_numeric($data->rt) ? $data->rt : 0;
+	$rw = is_numeric($data->rw) ? $data->rw : 0;
+	$id_jns_tinggal = is_numeric($data->id_jns_tinggal) ? $data->id_jns_tinggal : 0;
+	$a_terima_kps = is_numeric($data->a_terima_kps) ? $data->a_terima_kps : 0;
+	
+	$no_kps = $data->no_kps;
 	$no_kps = $data->no_kps;
 	$nm_ayah = clean($data->nm_ayah);
 	$tgl_lahir_ayah = clean($data->tgl_lahir_ayah);
@@ -366,9 +366,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_ayah, 6, 4);
 	$vtgl_lahir_ayah = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ayah = clean($data->id_jenjang_pendidikan_ayah);
-	$id_pekerjaan_ayah = clean($data->id_pekerjaan_ayah);
-	$id_penghasilan_ayah = clean($data->id_penghasilan_ayah);
+	$id_jenjang_pendidikan_ayah = is_numeric($data->id_jenjang_pendidikan_ayah) ? $data->id_jenjang_pendidikan_ayah : 0;
+	$id_pekerjaan_ayah = is_numeric($data->id_pekerjaan_ayah) ? $data->id_pekerjaan_ayah : 0;
+	$id_penghasilan_ayah = is_numeric($data->id_penghasilan_ayah) ? $data->id_penghasilan_ayah : 0;
 	$nm_ibu_kandung = clean($data->nm_ibu_kandung);
 	$tgl_lahir_ibu = clean($data->tgl_lahir_ibu);
 	$tgl = substr($tgl_lahir_ibu, 0, 2);
@@ -376,9 +376,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_ibu, 6, 4);
 	$vtgl_lahir_ibu = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_ibu = clean($data->id_jenjang_pendidikan_ibu);
-	$id_pekerjaan_ibu = clean($data->id_pekerjaan_ibu);
-	$id_penghasilan_ibu = clean($data->id_penghasilan_ibu);
+	$id_jenjang_pendidikan_ibu = is_numeric($data->id_jenjang_pendidikan_ibu) ? $data->id_jenjang_pendidikan_ibu : 0;
+	$id_pekerjaan_ibu = is_numeric($data->id_pekerjaan_ibu) ? $data->id_pekerjaan_ibu : 0;
+	$id_penghasilan_ibu = is_numeric($data->id_penghasilan_ibu) ? $data->id_penghasilan_ibu : 0;
 	$nm_wali = clean($data->nm_wali);
 	$tgl_lahir_wali = clean($data->tgl_lahir_wali);
 	$tgl = substr($tgl_lahir_wali, 0, 2);
@@ -386,9 +386,9 @@ else if ($aksi == "ubah") {
 	$thn = substr($tgl_lahir_wali, 6, 4);
 	$vtgl_lahir_wali = $thn . "/" . $bln . "/" . $tgl;
 
-	$id_jenjang_pendidikan_wali = clean($data->id_jenjang_pendidikan_wali);
-	$id_pekerjaan_wali = clean($data->id_pekerjaan_wali);
-	$id_penghasilan_wali = clean($data->id_penghasilan_wali);
+	$id_jenjang_pendidikan_wali = is_numeric($data->id_jenjang_pendidikan_wali) ? $data->id_jenjang_pendidikan_wali : 0;
+	$id_pekerjaan_wali = is_numeric($data->id_pekerjaan_wali) ? $data->id_pekerjaan_wali : 0;
+	$id_penghasilan_wali = is_numeric($data->id_penghasilan_wali) ? $data->id_penghasilan_wali : 0;
 
 	$mhs_a_kk_a = $data->mhs_a_kk_a;
 	$mhs_a_kk_b = $data->mhs_a_kk_b;
@@ -461,15 +461,15 @@ else if ($aksi == "ubah") {
 		$db = koneksi();
 		$eksekusiMhs = $db->query($qryKKmhs);
 		$dataKKmhs = $eksekusiMhs->fetch(PDO::FETCH_OBJ);
-		$id_kk = $dataKKmhs->id_kk;
+		$id_kk = ($dataKKmhs && is_numeric($dataKKmhs->id_kk)) ? $dataKKmhs->id_kk : 0;
 
 		$eksekusiAyah = $db->query($qryKKayah);
 		$dataKKayah = $eksekusiAyah->fetch(PDO::FETCH_OBJ);
-		$id_kk_ayah = $dataKKayah->id_kk;
+		$id_kk_ayah = ($dataKKayah && is_numeric($dataKKayah->id_kk)) ? $dataKKayah->id_kk : 0;
 
 		$eksekusiIbu = $db->query($qryKKibu);
 		$dataKKibu = $eksekusiIbu->fetch(PDO::FETCH_OBJ);
-		$id_kk_ibu = $dataKKibu->id_kk;
+		$id_kk_ibu = ($dataKKibu && is_numeric($dataKKibu->id_kk)) ? $dataKKibu->id_kk : 0;
 
 		$eksekusiSP = $db->query($qrySP);
 		$dataSP = $eksekusiSP->fetch(PDO::FETCH_OBJ);
@@ -478,7 +478,7 @@ else if ($aksi == "ubah") {
 
 		$db = null;
 
-		$qryMhs = "update wsia_mahasiswa set nisn='$nisn', nm_pd='$nm_pd',jk='$jk',nik='$nik',tmpt_lahir='$tmpt_lahir',tgl_lahir='$tgl_lahir',id_agama='$id_agama',id_kk='$id_kk',id_sp='$id_sp',jln='$jln',rt='$rt',rw='$rw',nm_dsn='$nm_dsn',ds_kel='$ds_kel',id_wil='$id_wil',kode_pos='$kode_pos',id_jns_tinggal='$id_jns_tinggal',telepon_rumah='$telepon_rumah',telepon_seluler='$telepon_seluler',email='$email',a_terima_kps='$a_terima_kps',no_kps='$no_kps',nm_ayah='$nm_ayah',tgl_lahir_ayah='$tgl_lahir_ayah',id_jenjang_pendidikan_ayah='$id_jenjang_pendidikan_ayah',id_pekerjaan_ayah='$id_pekerjaan_ayah',id_penghasilan_ayah='$id_penghasilan_ayah',id_kebutuhan_khusus_ayah='$id_kk_ayah',nm_ibu_kandung='$nm_ibu_kandung',tgl_lahir_ibu='$tgl_lahir_ibu',id_jenjang_pendidikan_ibu='$id_jenjang_pendidikan_ibu',id_penghasilan_ibu='$id_penghasilan_ibu',id_pekerjaan_ibu='$id_pekerjaan_ibu',id_kebutuhan_khusus_ibu='$id_kk_ibu',nm_wali='$nm_wali',tgl_lahir_wali='$tgl_lahir_wali',id_jenjang_pendidikan_wali='$id_jenjang_pendidikan_wali',id_pekerjaan_wali='$id_pekerjaan_wali',id_penghasilan_wali='$id_penghasilan_wali', updated_at='$updated_at', no_kk='$no_kk' where xid_pd='$xid_pd'";
+		$qryMhs = "update wsia_mahasiswa set nisn='$nisn', nm_pd='$nm_pd',jk='$jk',nik='$nik',tmpt_lahir='$tmpt_lahir',tgl_lahir='$tgl_lahir',id_agama=$id_agama,id_kk=$id_kk,id_sp='$id_sp',jln='$jln',rt=$rt,rw=$rw,nm_dsn='$nm_dsn',ds_kel='$ds_kel',id_wil='$id_wil',kode_pos='$kode_pos',id_jns_tinggal=$id_jns_tinggal,telepon_rumah='$telepon_rumah',telepon_seluler='$telepon_seluler',email='$email',a_terima_kps=$a_terima_kps,no_kps='$no_kps',nm_ayah='$nm_ayah',tgl_lahir_ayah='$tgl_lahir_ayah',id_jenjang_pendidikan_ayah=$id_jenjang_pendidikan_ayah,id_pekerjaan_ayah=$id_pekerjaan_ayah,id_penghasilan_ayah=$id_penghasilan_ayah,id_kebutuhan_khusus_ayah=$id_kk_ayah,nm_ibu_kandung='$nm_ibu_kandung',tgl_lahir_ibu='$tgl_lahir_ibu',id_jenjang_pendidikan_ibu=$id_jenjang_pendidikan_ibu,id_penghasilan_ibu=$id_penghasilan_ibu,id_pekerjaan_ibu=$id_pekerjaan_ibu,id_kebutuhan_khusus_ibu=$id_kk_ibu,nm_wali='$nm_wali',tgl_lahir_wali='$tgl_lahir_wali',id_jenjang_pendidikan_wali=$id_jenjang_pendidikan_wali,id_pekerjaan_wali=$id_pekerjaan_wali,id_penghasilan_wali=$id_penghasilan_wali, updated_at='$updated_at', no_kk='$no_kk' where xid_pd='$xid_pd'";
 		try {
 			$db = koneksi();
 			$eksekusi = $db->query($qryMhs);
