@@ -86,23 +86,28 @@ $sql_file = "{$tmp_dir}/database_{$date}.sql";
 
 function backupDatabaseNative($host, $user, $pass, $dbname, $sql_file) {
     try {
-        // NON-BUFFERED query untuk menghemat RAM ekstrim (PDO tidak load seluruh result ke RAM)
-        $pdo = new PDO("mysql:host={$host};charset=utf8mb4", $user, $pass, array(
+        // PDO Meta untuk query struktur (SHOW TABLES, CREATE TABLE) menggunakan Buffered = True
+        $pdoMeta = new PDO("mysql:host={$host};charset=utf8mb4", $user, $pass);
+        $pdoMeta->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // PDO Data untuk mengambil Data besar (SELECT *) menggunakan Buffered = False (Menjaga RAM)
+        $pdoData = new PDO("mysql:host={$host};charset=utf8mb4", $user, $pass, array(
             PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
         ));
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdoData->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         $fp = fopen($sql_file, 'w');
         if (!$fp) return "Gagal membuat file SQL.";
 
         $databases = [];
         if ($dbname === "ALL") {
-            $stmt = $pdo->query("SHOW DATABASES");
+            $stmt = $pdoMeta->query("SHOW DATABASES");
             while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
                 if (!in_array($row[0], ['information_schema', 'performance_schema', 'mysql', 'sys'])) {
                     $databases[] = $row[0];
                 }
             }
+            $stmt->closeCursor();
         } else {
             $databases[] = $dbname;
         }
@@ -113,21 +118,26 @@ function backupDatabaseNative($host, $user, $pass, $dbname, $sql_file) {
             fwrite($fp, "CREATE DATABASE IF NOT EXISTS `{$db}`;\n");
             fwrite($fp, "USE `{$db}`;\n\n");
             
-            $pdo->exec("USE `{$db}`");
+            $pdoMeta->exec("USE `{$db}`");
+            $pdoData->exec("USE `{$db}`");
+            
             $tables = [];
-            $stmt = $pdo->query("SHOW TABLES");
+            $stmt = $pdoMeta->query("SHOW TABLES");
             while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
                 $tables[] = $row[0];
             }
+            $stmt->closeCursor();
             
             foreach ($tables as $table) {
-                $stmt = $pdo->query("SHOW CREATE TABLE `{$table}`");
+                $stmt = $pdoMeta->query("SHOW CREATE TABLE `{$table}`");
                 $createTable = $stmt->fetch(PDO::FETCH_NUM);
+                $stmt->closeCursor();
+                
                 if (isset($createTable[1])) {
                     fwrite($fp, "DROP TABLE IF EXISTS `{$table}`;\n");
                     fwrite($fp, $createTable[1] . ";\n\n");
                     
-                    $rows = $pdo->query("SELECT * FROM `{$table}`");
+                    $rows = $pdoData->query("SELECT * FROM `{$table}`");
                     
                     $rowCount = 0;
                     $colsCount = $rows->columnCount();
@@ -138,7 +148,7 @@ function backupDatabaseNative($host, $user, $pass, $dbname, $sql_file) {
                             if (!isset($row[$i])) {
                                 $values[] = "NULL";
                             } else {
-                                $values[] = $pdo->quote((string)$row[$i]);
+                                $values[] = $pdoData->quote((string)$row[$i]);
                             }
                         }
                         fwrite($fp, "INSERT INTO `{$table}` VALUES(" . implode(",", $values) . ");\n");
@@ -150,6 +160,7 @@ function backupDatabaseNative($host, $user, $pass, $dbname, $sql_file) {
                             @ob_flush(); @flush();
                         }
                     }
+                    $rows->closeCursor();
                     fwrite($fp, "\n\n");
                 }
             }
